@@ -1,179 +1,353 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dengue Dashboard — Iellmar Barroga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/project_article.css">
+</head>
 
-<html>
-	<head>
-		<title>Dengue Case Trends in the Philippines</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="../assets_2/css/main.css" />
-	</head>
 
-	
-	<body class="is-preload">
-		<div id="page-wrapper">
+<body>
 
-			<!-- Header -->
-				<header id="header">
-					<h1 style="margin-left: 25px;"> Project by Iellmar Barroga</h1>
-					<nav id="nav">
-						<ul>
-							<li><a href="../index.html" style="margin-right: 20px;">Home</a></li>
-						</ul>
-					</nav>
-				</header>
+<div id="progress"></div>
 
-			<!-- Main -->
-				<section id="main" class="container">
-					<header>
-						<h2>Visualizing Dengue Trends in the Philippines: A Power BI Dashboard Analysis</h2>
-						<p>Exploring Key Metrics, Seasonal Patterns, and Regional Insights from Five Years of Dengue Data in the country</p>
-					</header>
-					<div class="box">
-						<!-- <span class="image featured"><img src="../images/pic01.jpg" alt="" /></span> -->
-						<h3>Introduction</h3>
-						<p>One of the most pressing public health concerns in tropical countries like the Philippines is <strong>dengue fever</strong>, a mosquito-borne disease that affects thousands of individuals annually. For this project, I took on the challenge of exploring the dataset on Dengue Cases in the Philippines and created a <strong>Power BI dashboard</strong> to visualize trends, patterns, and regional impacts of the disease. 
-							I analyzed five years' worth of dengue case data in the Philippines using <strong>Power BI</strong> to uncover trends and insights. This dashboard visualizes key metrics, regional patterns, and seasonal impacts.</p>
-			
-						<div class="row">
-							<div class="row-6 row-12-mobilep">
-								<h3>Data Overview</h3>
-								<p>The dataset, sourced from the Philippine Department of Health (DOH) via <a href=https://www.kaggle.com/datasets/vincentgupo/dengue-cases-in-the-philippines/data target= "_blank" >Kaggle</a>, covers dengue cases and deaths from 2016-2020. The main columns include: </p>
-								<ul style="margin-left: 2%;">
-									<li><span class="label">Month:</span> <span class="value">Text</span></li>
-									<li><span class="label">Year:</span> <span class="value">(2016-2020)</span></li>
-									<li><span class="label">Region:</span> <span class="value">(Philippine regions)</span></li>
-									<li><span class="label">Dengue_Cases:</span> <span class="value">(monthly case count)</span></li>
-									<li><span class="label">Dengue_Deaths:</span> <span class="value">(monthly death count)</span></li>
-								</ul>
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-back" href="../index.html">← Back to Portfolio</a>
+  <span class="nav-title">Iellmar Barroga</span>
+</nav>
 
-								<!-- This line is use to insert image -->
-								<p style="display: block; margin-top: -3%; margin-bottom: 2%; margin-left: 0%; width: 100%" 
-									class="image featured" ><img src="project images/p-i-1/raw_data.png" alt="" />
-								</p>
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-meta">
+    <span class="tag red">Public Health</span>
+    <span class="tag blue">Power BI</span>
+    <span class="tag">Data Visualization</span>
+    <span class="tag">Philippines</span>
+  </div>
+  <h1>Visualizing Dengue Trends<br>in the Philippines</h1>
+  <p class="hero-sub">
+    Exploring key metrics, seasonal patterns, and regional insights from
+    five years of dengue case data — built as an interactive Power BI dashboard.
+  </p>
 
-								<h3 style="margin-top: 3%;">Data preprocessing</h3>
-								<p style="margin-top: 1%;">In preprocessing, I standardized region names, mapped regions to island groups (Luzon, Visayas, Mindanao) and its corresponding <a href= https://en.wikipedia.org/wiki/Regions_of_the_Philippines target= "_blank">populations</a> into 'info_region_clean' Table. The supplementary information here would be useful for aggregating regional values.</p> 
-								
-								<!-- This line is use to insert image -->
-								<p style="display: block; margin-top: 0%; margin-bottom: 2%; margin-left: 0%; width: 100%" 
-									class="image featured" ><img src="project images/p-i-1/info_reg.png" alt="" />
-								</p>
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-value red">1.15M+</div>
+      <div class="kpi-label">Total Cases</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value red">16.9k</div>
+      <div class="kpi-label">Total Deaths</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value">1.47%</div>
+      <div class="kpi-label">Fatality Rate</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value blue">1.11%</div>
+      <div class="kpi-label">Prevalence Rate</div>
+    </div>
+  </div>
+</header>
 
-								<p >Additionally, to categorize months into <strong>rainy</strong> (June-November) and <strong>dry seasons</strong> (December-May), I converted the 'Month' column into its month-number, then used a conditional column for distinguishing rainy and dry months.</p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-1/rainy_dry.png" alt="" class="responsive-image" >
-								</p>
+<!-- BODY -->
+<div class="body-wrap">
 
-								<p style="margin-top: 1%;">Lastly, it is equally important as well to connect the tables by their keys in the 'Model' view so that there is a relationship when an ongoing calculations are being performed.</p> 
+  <!-- SIDEBAR TOC -->
+  <aside class="toc">
+    <p class="toc-label">Contents</p>
+    <ul id="toc-list"></ul>
+  </aside>
 
-								<!-- This line is use to insert image -->
-								<p style="display: block; margin-top: 0%; margin-bottom: 4%; margin-left: 0%; width: 100%" 
-									class="image featured" ><img src="project images/p-i-1/erd.png" alt="" />
-								</p>
+  <!-- ARTICLE -->
+  <article class="article" id="article">
 
-								<h3>KPIs</h3>
-								<p>To provide a concise overview, I included four critical KPIs in the dashboard:</p>
-								<ol style="margin-left: 2%; margin-bottom: 2%">
-									<li>Total Cases: Sum of all reported dengue cases (2016-2020).</li>
-									<li>Total Deaths: Sum of all deaths attributed to dengue.</li>
-									<li>Fatality Rate: Calculated as Total Deaths / Total Cases, indicating the lethality of the disease.</li>
-									<li>Prevalence Rate: Calculated as Total Cases / Population for each region, showing how widespread dengue is relative to population size.</li>
-								</ol>
+    <!-- INTRODUCTION -->
+    <div class="section" id="s-intro">
+      <p class="section-label">01 — Overview</p>
+      <h2>Introduction</h2>
+      <p>
+        Dengue fever is one of the most pressing public health concerns in tropical countries like the Philippines — a mosquito-borne disease that affects thousands annually.
+        For this project, I explored a five-year dengue case dataset from the Philippine Department of Health and built an interactive <strong>Power BI dashboard</strong> to surface trends, regional patterns, and seasonal impacts.
+      </p>
+      <div class="callout">
+        <strong>Goal:</strong> Give public health decision-makers a clear, interactive view of where dengue hits hardest and when — so interventions can be better targeted.
+      </div>
+    </div>
+    <hr class="section-rule">
 
-								<h3>Dashboard</h3>
-																										
-								<p><strong>KPI section</strong> shows values and its year-quarter trend that we want to know depending on our selection on the dashboard. The <strong>filter pane</strong> adjusts the independent variables - year, group island, and region. The <strong>parameter</strong> section lets us choose a metric either Total Cases or Total Deaths distribution.</p>
+    <!-- DATA OVERVIEW -->
+    <div class="section" id="s-data">
+      <p class="section-label">02 — Dataset</p>
+      <h2>Data Overview</h2>
+      <p>
+        The dataset was sourced from the Philippine Department of Health (DOH) via
+        <a href="https://www.kaggle.com/datasets/vincentgupo/dengue-cases-in-the-philippines/data" target="_blank" style="color:var(--accent2);text-decoration:underline">Kaggle</a>,
+        covering dengue cases and deaths from <strong>2016–2020</strong>.
+      </p>
 
-								<!-- This line is use to insert image -->
-								<p style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%" 
-									class="image featured" ><img src="project images/p-i-1/dengue db details 1.png" alt="" />
-								</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Column</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Month</td><td>Text</td><td>Month of recorded data</td></tr>
+          <tr><td>Year</td><td>Integer</td><td>2016 – 2020</td></tr>
+          <tr><td>Region</td><td>Text</td><td>Philippine administrative region</td></tr>
+          <tr><td>Dengue_Cases</td><td>Integer</td><td>Monthly case count per region</td></tr>
+          <tr><td>Dengue_Deaths</td><td>Integer</td><td>Monthly death count per region</td></tr>
+        </tbody>
+      </table>
 
-								<h3 style="margin-top: 2%">Analysis and Findings</h3>
-								<h4 style="margin-top: 2%;">Regional Trends</h4>
-								<p style="margin-top: 2%"><strong>Luzon</strong> had the highest number of <strong>dengue cases</strong> (597k) due to its overall population, greater than the cases from <strong>Visayas</strong> and <strong>Mindanao</strong> combined (280k and 269k respectively). Regions in Luzon, particularly <strong>Region IV-A (CALABARZON)</strong>, <strong>Region III (Central Luzon)</strong> and <strong>Metro Manila</strong> had the highest number of cases. </p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-1/tc dengue.png" alt="" class="responsive-image" >
-								</p>
-								
-								<p>For <strong>total deaths</strong>, <strong>Luzon</strong> (6.8k) still had the highest number of deaths, followed relatively closely by <strong>Mindanao</strong> (5.9k). <strong>Visayas</strong> had the lowest recorded deaths (4.2k). <strong>NCR</strong> accounted for the most deaths (4k), still greater than the second and third most combined.</p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-1/td dengue.png" alt="" class="responsive-image" >
-								</p>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/raw_data.png" alt="Raw dataset preview" loading="lazy">
+        <p class="img-caption">Raw dataset — as loaded before preprocessing</p>
+      </div>
+    </div>
+    <hr class="section-rule">
 
-								<p style="margin-top: 2%">The average <strong>fatality</strong> and <strong>prevalence rate</strong> are 1.47% and 1.11% respectively. <strong>Luzon</strong> had 1.14% and 0.96% fatality and prevalence rate, the lowest among the three group islands. <strong>Mindanao</strong> had the highest fatality rate of 2.18% followed by <strong>Visayas</strong> with 1.48%. On the other hand, <strong>Visayas</strong> has the highest prevalence rate of 1.77% followed by <strong>Mindanao</strong> with 1.07%.</p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-1/island_info.png" alt="" class="responsive-image" >
-								</p>
-								
-								<p><strong>Region XII (Soccsksargen)</strong> had the highest fatality rate of 4.68% despite its relatively lower population density of 202 per square kilometer. <strong>Metro Manila</strong>, with a whopping 20,247 population density, had a fatality rate of 3.46%, the second highest. On the other hand, <strong>Metro Manila</strong> had a relatively lower prevalence rate of 0.86% despite its high population density. <strong>Region VI (Western Visayas)</strong> had the highest prevalence rate of 2.48%.</p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-1/ncr_info.png" alt="" class="responsive-image" >
-								</p>
+    <!-- DATA PREPROCESSING -->
+    <div class="section" id="s-prep">
+      <p class="section-label">03 — Preprocessing</p>
+      <h2>Data Preprocessing</h2>
+      <p>
+        Before building the dashboard, I cleaned and enriched the raw dataset in Power Query. Three key steps:
+      </p>
 
-								<h4 style="margin-top: 3%">Seasonal Impact</h4>
-								<p style="margin-top: 2%">As expected, dengue cases surged during the <strong>rainy season</strong> (June-November), peaking around August and September. <strong>Dry season</strong> months saw fewer cases, but spikes were observed occasionally. </p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-1/season.png" alt="" class="responsive-image" >
-								</p>
+      <h3>1. Region Standardization</h3>
+      <p>
+        Region names were inconsistent across rows. I standardized them and mapped each region to its island group (Luzon, Visayas, Mindanao) along with population figures in a separate <code>info_region_clean</code> lookup table — enabling accurate per-capita calculations.
+      </p>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/info_reg.png" alt="Region info table" loading="lazy">
+        <p class="img-caption">info_region_clean — island group and population lookup</p>
+      </div>
 
-								<h3 style="margin-top: 2%">Insights</h3>
-								<p>The data on dengue cases highlights significant regional and seasonal trends that can inform better public health strategies. Luzon emerges as the most affected region, likely due to its high population, while Mindanao and Visayas show concerningly higher fatality rates despite fewer cases.</p> 
-								<p>This suggests that the latter regions faces greater challenges in healthcare access or lack thereof, leading to more severe outcomes. 
-									Notably, Metro Manila -  a region with high population density, also exhibit high fatality rates, indicating that densely populated areas face unique challenges in managing outbreaks effectively.</p>
-								<p>Seasonal trends show a clear spike in dengue cases during the rainy season, particularly from June to November, peaking in August and September, suggesting that preventive measures should be intensified during these months. </p>
-								<p>The data underscores the importance of targeted interventions, particularly in high-risk regions and during high-risk seasons, to reduce both infection rates and fatalities. 
-									Additionally, the variations in fatality and prevalence rates across regions suggest that public health responses should be tailored to specific regional needs, focusing on improving healthcare access and preparedness in areas where outcomes tend to be more severe.</p>
+      <h3>2. Seasonal Classification</h3>
+      <p>
+        To analyze seasonal impact, I converted the text <code>Month</code> column to a month number, then applied a conditional column to label each row as <strong>Rainy Season</strong> (June–November) or <strong>Dry Season</strong> (December–May).
+      </p>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/rainy_dry.png" alt="Seasonal classification step" loading="lazy">
+        <p class="img-caption">Conditional column logic for rainy vs. dry season classification</p>
+      </div>
 
-								<h3 style="margin-top: 3%;">Video Demo</h3>
-								<iframe style="display: block" width=100% height=520 src="https://www.youtube.com/embed/vbJUY1O8byo?si=Xf1y7aFocYRXLLIs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <h3>3. Table Relationships</h3>
+      <p>
+        Finally, I connected the fact and lookup tables in Power BI's Model view via their shared region key, ensuring all cross-table calculations work correctly.
+      </p>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/erd.png" alt="Entity relationship diagram" loading="lazy">
+        <p class="img-caption">Table relationships in Power BI Model view</p>
+      </div>
+    </div>
+    <hr class="section-rule">
 
-								<h3 style="margin-top: 3%;">Conclusion</h3>
-								<p>The Power BI dashboard provides a detailed, interactive view of dengue trends in the Philippines. It offers actionable insights that can assist public health officials in targeted interventions. The inclusion of other metrics or KPIs like the fatality rate and prevalence rate further enriches the analysis, making it a valuable tool for understanding the scope of dengue outbreaks.</p>
+    <!-- KPIs -->
+    <div class="section" id="s-kpis">
+      <p class="section-label">04 — KPIs</p>
+      <h2>Key Performance Indicators</h2>
+      <p>The dashboard exposes four primary KPIs, each with a year-quarter sparkline that updates dynamically with any filter selection.</p>
 
-							</div>
+      <div class="stat-grid">
+        <div class="stat-cell">
+          <div class="val red">Total Cases</div>
+          <div class="lbl">Sum of all reported cases, 2016–2020</div>
+        </div>
+        <div class="stat-cell">
+          <div class="val red">Total Deaths</div>
+          <div class="lbl">Sum of all dengue-attributed deaths</div>
+        </div>
+        <div class="stat-cell">
+          <div class="val">Fatality Rate</div>
+          <div class="lbl">Deaths ÷ Cases — disease lethality</div>
+        </div>
+        <div class="stat-cell">
+          <div class="val blue">Prevalence Rate</div>
+          <div class="lbl">Cases ÷ Population — regional spread</div>
+        </div>
+      </div>
 
-						</div>
-					</div>
-				</section>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/dengue db details 1.png" alt="Dashboard overview" loading="lazy">
+        <p class="img-caption">Dashboard — KPI section, filter pane, and parameter toggle</p>
+      </div>
+    </div>
+    <hr class="section-rule">
 
-			<!-- Footer -->
-				<footer id="footer">
-					<ul class="icons">
-						<li><a href="https://github.com/iellmarbarroga" target= "_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
-						<li><a href="https://www.linkedin.com/in/iellmar-barroga/" target= "_blank" class="icon brands fab fa-linkedin"><span class="label">LinkedIn</span></a></li>
-					</ul>
-					<ul class="copyright">
-						<li> <a class="icon solid fa-envelope"><span class="label">Email</span> barroga.iig@gmail.com</a></li> 
-						<li><a class="cv-link" href="#" target= "_blank">CV</a></li> 
-					</ul>
-				</footer>
+    <!-- ANALYSIS -->
+    <div class="section" id="s-findings">
+      <p class="section-label">05 — Analysis & Findings</p>
+      <h2>Key Findings</h2>
 
-		</div>
+      <h3>Regional Distribution — Cases</h3>
+      <p>
+        <strong>Luzon</strong> recorded the highest case volume at <span class="dot-red">597,000+</span> — more than Visayas (280k) and Mindanao (269k) combined. Within Luzon, <strong>Region IV-A (CALABARZON)</strong>, <strong>Region III (Central Luzon)</strong>, and <strong>Metro Manila</strong> were the top three.
+      </p>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/tc dengue.png" alt="Total cases by region" loading="lazy">
+        <p class="img-caption">Total dengue cases by island group and region</p>
+      </div>
 
-		<!-- Scripts -->
-			<!-- <script src="assets_2/js/jquery.min.js"></script>
-			<script src="assets_2/js/jquery.dropotron.min.js"></script>
-			<script src="assets_2/js/jquery.scrollex.min.js"></script>
-			<script src="assets_2/js/browser.min.js"></script>
-			<script src="assets_2/js/breakpoints.min.js"></script>
-			<script src="assets_2/js/util.js"></script>
-			<script src="assets_2/js/main.js"></script> -->
-			
-			<!-- Script for the CV link -->
-			<script src="../assets/js/cv-link.js"></script>
+      <h3>Regional Distribution — Deaths</h3>
+      <p>
+        While Luzon led in deaths (6.8k), <strong>Mindanao</strong> was a close second at 5.9k. Notably, <strong>NCR (Metro Manila)</strong> alone accounted for 4,000 deaths — more than all of Visayas combined.
+      </p>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/td dengue.png" alt="Total deaths by region" loading="lazy">
+        <p class="img-caption">Total dengue deaths by island group</p>
+      </div>
 
-	</body>
+      <h3>Fatality &amp; Prevalence by Island Group</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Island Group</th>
+            <th>Fatality Rate</th>
+            <th>Prevalence Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Luzon</td><td>1.14%</td><td>0.96%</td></tr>
+          <tr><td>Visayas</td><td>1.48%</td><td class="dot-blue">1.77%</td></tr>
+          <tr><td>Mindanao</td><td class="dot-red">2.18%</td><td>1.07%</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        Despite having fewer total cases, <strong>Mindanao had the highest fatality rate at 2.18%</strong> — suggesting greater challenges in healthcare access or outbreak response capacity compared to Luzon.
+      </div>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/island_info.png" alt="Island group breakdown" loading="lazy">
+        <p class="img-caption">Fatality and prevalence rates by island group</p>
+      </div>
+
+      <h3>Standout Regions</h3>
+      <p>
+        <strong>Region XII (Soccsksargen)</strong> had the highest fatality rate at <span class="dot-red">4.68%</span> despite a relatively low population density of 202/km². Meanwhile, Metro Manila's density of 20,247/km² produced a fatality rate of 3.46% — the second highest — but a surprisingly low prevalence rate of just 0.86%. <strong>Region VI (Western Visayas)</strong> had the highest prevalence rate of 2.48%.
+      </p>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/ncr_info.png" alt="NCR and regional detail" loading="lazy">
+        <p class="img-caption">Metro Manila vs. outlier regions by fatality and prevalence</p>
+      </div>
+
+      <h3>Seasonal Patterns</h3>
+      <p>
+        Cases surged predictably during the <strong>rainy season (June–November)</strong>, peaking in August–September each year. Dry season months showed significantly lower counts, with only occasional spikes.
+      </p>
+      <div class="img-block">
+        <img src="../project_articles/project images/p-i-1/season.png" alt="Seasonal trend chart" loading="lazy">
+        <p class="img-caption">Monthly case distribution — rainy vs. dry season</p>
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- INSIGHTS -->
+    <div class="section" id="s-insights">
+      <p class="section-label">06 — Insights</p>
+      <h2>What the Data Suggests</h2>
+
+      <div class="callout">
+        <strong>High cases ≠ high fatality.</strong> Luzon has the most cases but the lowest fatality rate. Mindanao and Visayas have fewer cases but worse outcomes — pointing to healthcare access gaps, not just disease burden.
+      </div>
+
+      <div class="callout blue">
+        <strong>Densely populated areas face a different problem.</strong> Metro Manila has fewer cases per capita but disproportionately high deaths — likely due to delayed care-seeking in urban congestion, or reporting lags.
+      </div>
+
+      <p>
+        The consistent rainy-season surge (June–November) underscores that <strong>preventive resources — vector control, public advisories, hospital capacity — should be pre-positioned by May</strong> at the latest, especially in high-risk regions.
+      </p>
+      <p>
+        Variations in fatality and prevalence rates across regions argue strongly for <strong>differentiated public health responses</strong> rather than a one-size-fits-all national policy.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- Video -->
+    <div class="section" id="s-demo">
+      <p class="section-label">07 — Demo</p>
+      <h2>Video Demo</h2>
+      <div class="img-block video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/vbJUY1O8byo?si=Xf1y7aFocYRXLLIs&vq=hd1080"
+          title="Dengue Dashboard Video Demo"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- CONCLUSION -->
+    <div class="section" id="s-conclusion">
+      <p class="section-label">08 — Conclusion</p>
+      <h2>Conclusion</h2>
+      <p>
+        This Power BI dashboard translates five years of raw dengue data into a clear, interactive analytical tool. Beyond basic case counts, it surfaces the <em>quality</em> of health outcomes — fatality rates, prevalence, and regional disparities — that case volumes alone would obscure.
+      </p>
+      <p>
+        The inclusion of metrics like fatality rate and prevalence rate makes this a more useful tool for public health officials than a simple case map. Future iterations could incorporate population age structure, hospital bed capacity per region, or weather data to deepen the seasonal analysis.
+      </p>
+      <div class="callout blue">
+        <strong>Tools used:</strong> Power BI · Power Query · DAX · Kaggle (DOH dataset)
+      </div>
+    </div>
+
+
+    <script>
+    /* TOC GENERATION */
+      const sections = [
+        { id: 's-intro',      label: 'Introduction' },
+        { id: 's-data',       label: 'Data Overview' },
+        { id: 's-prep',       label: 'Preprocessing' },
+        { id: 's-kpis',       label: 'KPIs' },
+        { id: 's-findings',   label: 'Findings' },
+        { id: 's-insights',   label: 'Insights' },
+        { id: 's-demo',       label: 'Video Demonstration' },
+        { id: 's-conclusion', label: 'Conclusion' },
+      ];
+    </script>
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-left">
+        <div>© 2026 Iellmar Barroga</div>
+        <div>Data Analyst · Philippines</div>
+      </div>
+      <nav class="footer-links">
+        <a href="https://github.com/iellmarbarroga" target="_blank">GitHub</a>
+        <a href="https://www.linkedin.com/in/iellmar-barroga/" target="_blank">LinkedIn</a>
+        <a href="mailto:barroga.iig@gmail.com">Email</a>
+        <a class="cv-link" href="#" target= "_blank">CV</a>
+      </nav>
+    </footer>
+
+  </article>
+</div>
+
+<!-- MOBILE TOC BUTTON -->
+<button id="toc-btn" aria-label="Table of contents">☰</button>
+
+<!-- MOBILE TOC DRAWER -->
+<div class="toc-drawer" id="toc-drawer">
+  <button class="toc-drawer-close" id="toc-drawer-close">✕ Close</button>
+  <ul id="toc-drawer-list"></ul>
+</div>
+
+<script src="../assets/js/table_of_contents.js"></script>
+<script src="../assets/js/cv-link.js"></script>
+
+</body>
 </html>
