@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Video Games Sales Analysis</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets_2/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header">
+					<h1 style="margin-left: 25px;"> Project by Iellmar Barroga</h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="../index.html" style="margin-right: 20px;">Home</a></li>
+						</ul>
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<section id="main" class="container">
+					<header>
+						<h2>Analyzing Global Video Game Sales: Trends and Insights</h2>
+						<p>Exploring Patterns in the Video Game Market from 1980s to 2010s Through Data Analysis</p>
+					</header>
+
+					<div class="box">
+						<!-- <span class="image featured"><img src="../images/pic01.jpg" alt="" /></span> -->
+
+						<h3>Introduction</h3>
+						<p>Video games have become an integral part of modern culture, especially since the technological advancements of the 1980s. As demand for video games continues to rise, analyzing market trends is essential. This analysis aims to uncover significant patterns in video game sales data, addressing key questions about trends over time and regional popularity of genres using <strong>Excel</strong>.</p>
+			
+						<div class="row">
+							<div class="row-6 row-12-mobilep">
+								<h3>Data Overview</h3>
+								<p>The data for this analysis was sourced from <a href="https://www.kaggle.com/datasets/gregorut/videogamesales/data" target="_blank">Kaggle</a>. The dataset contains information about global video game sales from 1980s to 2010s, with each row representing a specific video game. Key columns include:</p>
+								<ul style="margin-left: 2%; margin-bottom: 2%;">
+									<li><span class="label">Rank:</span> <span class="value">The game's position based on global sales.</span></li>
+									<li><span class="label">Name:</span> <span class="value">The title of the video game.</span></li>
+									<li><span class="label">Platform:</span> <span class="value">The platform on which the game was released.</span></li>
+									<li><span class="label">Year:</span> <span class="value">The release year of the game.</span></li>
+									<li><span class="label">Genre:</span> <span class="value">The type or category of the game.</span></li>
+									<li><span class="label">Publisher:</span> <span class="value">The company that published the game.</span></li>
+									<li><span class="label">NA_Sales:</span> <span class="value">Sales in North America (in millions).</span></li>
+									<li><span class="label">EU_Sales:</span> <span class="value">Sales in Europe (in millions).</span></li>
+									<li><span class="label">JP_Sales:</span> <span class="value">Sales in Japan (in millions).</span></li>
+									<li><span class="label">Other_Sales:</span> <span class="value">Sales in all other regions globally (in millions).</span></li>
+									<li><span class="label">Global_Sales:</span> <span class="value">Total worldwide sales (in millions)</span></li>
+								</ul>
+								
+								<!-- This line is use to insert image -->
+								<p style="display: block; margin-top: 2%; margin-bottom: 2%; margin-left: 0%; width: 100%" 
+									class="image featured" ><img src="project images/p-i-4/raw_data.png" alt="" />
+								</p>
+
+								<h3 style="margin-top: 3%;">Data preprocessing</h3>
+								<p>The format of the values was converted to an appropriate format depending on the column. For the Sales column, it was not stated if it was in terms of currency, so I assumed it to be the units or the number of games sold. The Year column was converted to Number. Others were already in the general format, so no changes were made.
+									The dataset has no duplicate values, but it was found that it contained blanks such as “N/A” and “unknown” in the Year and Publisher column. 
+								</p>
+
+								<div class="row">
+									<article class="col-9 col-12-narrower" style="margin: 0 auto">
+										<!-- This line is use to insert image -->
+										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
+											class="image featured" ><img src="project images/p-i-4/convert.png" alt="" />
+										</a>
+									</article>
+								</div>
+
+								<p style="margin-top: 3%;">The median game release Year was calculated using the Excel formula <strong>=MEDIAN(Sales[Year])</strong> which is 2007. It was used to fill null values in the Year column.</p> 
+								
+								<!-- This line is use to insert image -->
+								<p style="margin-top: 0%; margin-bottom: 3%;" class="image featured">
+									<img src="project images/p-i-4/yr_median.png" alt="" class="responsive-image" >
+								</p>
+
+								<p style="margin-top: 3%;">For the remaining blanks in the Publisher column, I decided to remove these entries from the dataset as it was only 1.57% of the total entries (261 out of 16,598 entries).</p> 
+								
+								<!-- This line is use to insert image -->
+								<p style="margin-top: 0%; margin-bottom: 3%;" class="image featured">
+									<img src="project images/p-i-4/na_val.png" alt="" class="responsive-image" >
+								</p>
+
+								<h3 style="margin-top: 2%;">Analysis and Findings</h3>
+								
+								<h4>Distribution and trend of video games sales</h4>
+								<p style="margin-top: 2%">The analysis highlights a significant growth in global video game sales in millions from the late 1990s until the mid-2000s, after which a steady decline has been observed, particularly since the end of 2008. </p>
+									
+								<div class="row">
+									<article class="col-11 col-11-narrower" style="margin: 0 auto">
+										<!-- This line is use to insert image -->
+										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
+											class="image featured" ><img src="project images/p-i-4/vg trend chart.png" alt="" />
+										</a>
+									</article>
+								</div>
+								
+								<p style="margin-top: 2%"> <strong>North America</strong> remained the dominant market, accounting for nearly half of global sales, with <strong>Europe</strong> following at over a quarter. </p>
+								
+								<div class="row">
+									<article class="col-6 col-8-narrower" style="margin: 0 auto">
+										<!-- This line is use to insert image -->
+										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
+											class="image featured" ><img src="project images/p-i-4/vg pie.png" alt="" />
+										</a>
+									</article>
+								</div>
+
+								<h4 style="margin-top: 1%">Most popular genre </h4>
+								<p style="margin-top: 2%"> <strong>Action</strong> and <strong>Sports</strong> genre of video games were the most popular games. With over 3,281 games in Action genre and 2,317 games under Sports genre, these genres thwarted other genres when it came to the volume of games released across the years. When it comes to regional preferences, Action and Sports were also popular in every region, having similar sales percentages. Action games include Grand Theft Auto and Assassins’ Creed. Sports games include FIFA games and Wii Sports.</p>
+								
+								<div class="row">
+									<article class="col-10 col-12-narrower" style="margin: 0 auto">
+										<!-- This line is use to insert image -->
+										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
+											class="image featured" ><img src="project images/p-i-4/action sports.png" alt="" />
+										</a>
+									</article>
+								</div>
+								
+								<p style="margin-top: 1%">It is worth stating that <strong>Role-playing games</strong> such as Pokémon and Final Fantasy were popular in Japan compared to the rest of the world. Almost 30% of Japan video games sales were games under <strong>Role-Playing</strong> genre. This is massively overwhelming compared to other regions which is typically around only 8-9%. </p>			
+					
+								<div class="row">
+									<article class="col-10 col-12-narrower" style="margin: 0 auto">
+										<!-- This line is use to insert image -->
+										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
+											class="image featured" ><img src="project images/p-i-4/reg genre pref.png" alt="" />
+										</a>
+									</article>
+								</div>
+							
+								<h4 style="margin-top: 2%">Most popular game company</h4>
+								<p style="margin-top: 2%"><strong>Nintendo</strong> tops other companies at 1,786.56 million units sold globally. Following behind are <strong>Electronic Arts</strong> with 1,110.32 million units, <strong>Activision</strong> at 727.46 million, <strong>Sony Computer Entertainment</strong> at 607.5 million, and <strong>Ubisoft</strong> at 474.72 million units sold.</p>
+									
+								<div class="row">
+									<article class="col-11 col-11-narrower" style="margin: 0 auto">
+										<!-- This line is use to insert image -->
+										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
+											class="image featured" ><img src="project images/p-i-4/bar_nintendo.png" alt="" />
+										</a>
+									</article>
+								</div>
+								
+								<p style="margin-top: 2%">It is also important to show that <strong>Nintendo</strong> has consistently been the dominant force in the video game industry, with significant spikes in sales, particularly between 2006 and 2009. During this time, Nintendo reached its highest peak in terms of units sold, outpacing its competitors by a large margin. Although <strong>Electronic Arts</strong> and <strong>Activision</strong> also had notable periods of growth, their overall sales figures remained much lower than Nintendo's.</p>
+								
+								<div class="row">
+									<article class="col-12 col-12-narrower" style="margin: 0 auto">
+										<!-- This line is use to insert image -->
+										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
+											class="image featured" ><img src="project images/p-i-4/Nintendo.png" alt="" />
+										</a>
+									</article>
+								</div>
+								
+								<h3 style="margin-top: 4%">Insights</h3>
+								<p style="margin-top: 2%">To maximize sales in <strong>North American</strong> and <strong>European</strong> markets, focusing marketing and distribution efforts in these regions is essential due to their substantial market share. Prioritizing <strong>Action</strong> and <strong>Sports</strong> games, which were particularly popular in these areas, can significantly enhance sales potential and audience engagement. By targeting these genres, publishers can tap into established preferences and increase their chances of commercial success. </p>
+								<p>Additionally, adapting to regional genre preferences is key for broader success. In <strong>Japan</strong>, there is a strong demand for <strong>Role-Playing games (RPGs)</strong>, making it important to increase the development and promotion of RPGs in this market. Globally, <strong>Action</strong> and <strong>Sports</strong> games remain widely appealing across multiple regions, making these genres ideal for a cohesive global marketing strategy.</p>
+								<p>The data on global video game sales reveals Nintendo's tremendous success over the years which can offer valuable insights that could be studied or even replicated by competitors. By examining their unique value proposition—such as its focus on innovative, family-friendly gaming experiences and its ability to consistently engage a broad audience—other companies might uncover strategies that could be applied to their own markets. Additionally, identifying areas where Nintendo may not be as strong could present opportunities to innovate in spaces outside of Nintendo's primary focus, giving competitors a chance to carve out their own unique advantages in the gaming industry.</p>
+								
+								<h3 style="margin-top: 3%;">Conclusion</h3>
+								<p>This analysis of global video game sales provides valuable insights into industry trends. Understanding sales dynamics, regional preferences, and publisher performance is crucial for stakeholders navigating this dynamic landscape. Ongoing analysis will remain essential as the video game market evolves.</p>
+
+							</div>
+
+						</div>
+					</div>
+				</section>
+
+			<!-- Footer -->
+				<footer id="footer">
+					<ul class="icons">
+						<li><a href="https://github.com/iellmarbarroga" target= "_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
+						<li><a href="https://www.linkedin.com/in/iellmar-barroga/" target= "_blank" class="icon brands fab fa-linkedin"><span class="label">LinkedIn</span></a></li>
+					</ul>
+					<ul class="copyright">
+						<li> <a class="icon solid fa-envelope"><span class="label">Email</span> barroga.iig@gmail.com</a></li> 
+						<li><a class="cv-link" href="#" target= "_blank">CV</a></li> 
+					</ul>
+				</footer>
+
+		</div>
+
+		<!-- Scripts
+			<script src="assets_2/js/jquery.min.js"></script>
+			<script src="assets_2/js/jquery.dropotron.min.js"></script>
+			<script src="assets_2/js/jquery.scrollex.min.js"></script>
+			<script src="assets_2/js/browser.min.js"></script>
+			<script src="assets_2/js/breakpoints.min.js"></script>
+			<script src="assets_2/js/util.js"></script>
+			<script src="assets_2/js/main.js"></script> -->
+
+			<!-- Script for the CV link -->
+			<script src="../assets/js/cv-link.js"></script>
+
+	</body>
+</html>

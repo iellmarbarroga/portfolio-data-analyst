@@ -1,191 +1,336 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Housing Market Dashboard — Iellmar Barroga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/project_article.css">
 
-<html>
-	<head>
-		<title>Metro Manila Housing Market Dashboard</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="../assets_2/css/main.css" />
-	</head>
-	<body class="is-preload">
-		<div id="page-wrapper">
+  <!--- This is for the "script-code-look" on the website page-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
-			<!-- Header -->
-				<header id="header">
-					<h1 style="margin-left: 25px;"> Project by Iellmar Barroga</h1>
-					<nav id="nav">
-						<ul>
-							<li><a href="../index.html" style="margin-right: 20px;">Home</a></li>
-						</ul>
-					</nav>
-				</header>
+  <style>
+    :root { --accent: #1a6b3c; --accent2: #b5830a; } /* housing green/gold */
+  </style>
+</head>
 
-			<!-- Main -->
-				<section id="main" class="container">
-					<header>
-						<h2>Analyzing the Housing Market in Metro Manila: Insights from Power BI</h2>
-						<p>Understanding housing market insights in the capital region and largest metropolitan area of the Philippines</p>
-					</header>
-					<div class="box">
-						<!-- <span class="image featured"><img src="../images/pic01.jpg" alt="" /></span> -->
-						<h3>Introduction</h3>
-						<p>Understanding housing trends is essential for buyers and investors. This article presents an analysis of the housing market in Metro Manila, utilizing a dataset sourced from the Lamudi platform. By employing <strong>Power BI</strong> for visualization and <strong>Python</strong> for data cleaning, I took on the challenge of revealing key insights into property listings and market trends.</p>
-			
-						<div class="row">
-							<div class="row-6 row-12-mobilep">
-								<h3>Data Overview</h3>
-								<p>The dataset from <a href="https://www.kaggle.com/datasets/klekzee/phillipines-housing-market?select=PH_Housing.csv" target="_blank">Kaggle</a> comprises records of real estate listings with the following columns:</p>
-								<ul style="margin-left: 2%; margin-bottom: 2%">
-									<li>House ID: Unique listing identifier.</li>
-									<li>Description: Details about the property.</li>
-									<li>Location: Address. Contains city and region.</li>
-									<li>Price: Listing price.</li>
-									<li>Floor Area: Area in square meters.</li>
-									<li>Land Area: Land area in square meters.</li>
-								</ul>
+<!--For the pop-up of images/video to full screen-->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="">
+  <iframe id="lightbox-video" src="" allowfullscreen
+    style="display:none; width:90vw; max-width:1100px; height:56.25vw; max-height:80vh; border:none; border-radius:4px;">
+  </iframe>
+</div>
 
-								<!-- This line is use to insert image -->
-								<p style="display: block; margin-top: 2%; margin-bottom: 2%; margin-left: 0%; width: 100%" 
-									class="image featured" ><img src="project images/p-i-2/raw_data.png" alt="" />
-								</p>
+<script>hljs.highlightAll();</script>
+<body>
 
-								<h3 style="margin-top: 3%;">Data preprocessing</h3>
+<div id="progress"></div>
 
-								<p>To acquire the cities and/or municipalities in the dataset, the last characters after the delimiter comma in the 'Location' column were extracted. </p>
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-back" href="../index.html">← Back to Portfolio</a>
+  <span class="nav-title">Iellmar Barroga</span>
+</nav>
 
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-2/a_delimiter.png" alt="" class="responsive-image" >
-								</p>
-								
-								<p>I prepared a mapping of cities and/or municipalities in Metro Manila using this <a href="https://en.wikipedia.org/wiki/List_of_cities_and_municipalities_in_the_Philippines" target="_blank">data</a> to subset the listings on the locations we are interested in.</p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-2/ncr cities.png" alt="" class="responsive-image" >
-								</p>
-								
-								<p>To filter the dataset to include only Metro Manila locations, a left join was used where the 'NCR cities mapping' is the left table, subsetting the 'listings' (right table).</p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-2/merge.png" alt="" class="responsive-image" >
-								</p>
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-meta">
+    <span class="tag green">Real Estate</span>
+    <span class="tag gold">Power BI</span>
+    <span class="tag">Python</span>
+    <span class="tag">Metro Manila</span>
+  </div>
+  <h1>Analyzing the Housing Market<br>in Metro Manila</h1>
+  <p class="hero-sub">
+    Understanding property listing trends, price distribution, and city-level insights
+    from Lamudi data — visualized with Power BI and cleaned with Python.
+  </p>
 
-								<p>To extract the type of housing (Single Attached/Detached, Townhouse, Multiplex, others), Text.contains function was used to check if the Description column contained specific keywords that defined it to a housing type.</p>
-								
-								<!-- This line is use to insert image -->
-								<p style="display: block; margin-top: 3%; margin-bottom: 2%; margin-left: 0%; width: 100%" 
-									class="image featured" ><img src="project images/p-i-2/type_house.png" alt="" />
-								</p>
-								
-								<p>To extract the number of floors (1-storey, 2-storey, etc.), Text.contains function was used to check if the Description column contained specific keywords that defined it to a storey-level.</p>
-								
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-2/storey_level.png" alt="" class="responsive-image" >
-								</p>
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-value gold">₱28.65M</div>
+      <div class="kpi-label">Median Price</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value gold">₱212,580</div>
+      <div class="kpi-label">Median / sqm</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value green">140</div>
+      <div class="kpi-label">Top City Listings</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value">17</div>
+      <div class="kpi-label">Cities Covered</div>
+    </div>
+  </div>
+</header>
 
-								<p>Upon checking, there are 3 percent of missing data in the Price column. So median imputation was considered; median house price grouped by city was filled to the missing data. Python was used for this technique. The Price column was grouped by City, and then its median was calculated. A new column called 'price_medians_city' was created to contain the medians. The medians were then used to fill null values. Below is the Python script that I used.</p>
+<!-- BODY -->
+<div class="body-wrap">
 
-								<!-- This line is use to insert image -->
-								<p style="margin-top: 0%; margin-bottom: 2%;" class="image featured">
-									<img src="project images/p-i-2/python_script_median_imputation.png" alt="" class="responsive-image" >
-								</p>
+  <aside class="toc">
+    <p class="toc-label">Contents</p>
+    <ul id="toc-list"></ul>
+  </aside>
 
-								<h3>KPIs</h3>
-								<p>To provide a concise overview, I included four critical KPIs in the dashboard:</p>
-								<ol style="margin-left: 2%; margin-bottom: 2%">
-									<li>Median Price: Average prices by city and type.</li>
-									<li>Total Listings: Count of listings per city.</li>
-									<li>Average Price per Square Meter: Insight into price density.</li>
-									<li>Land Area to Price Ratio: Evaluating land area pricing.</li>
-								</ol>
+  <article class="article" id="article">
 
-								<h3>Dashboard</h3>
-																													
-								<p><strong>KPI section</strong> shows values we want to know depending on our selection on the dashboard. The <strong>filter pane</strong> adjusts the independent variables - city, house type, and storey level. The <strong>parameter</strong> section lets us choose a metric either Median Price in millions of Pesos, Price per square meter in thousands of Pesos, or Total Listings.</p>
+    <!-- INTRODUCTION -->
+    <div class="section" id="s-intro">
+      <p class="section-label">01 — Overview</p>
+      <h2>Introduction</h2>
+      <p>
+        Understanding housing trends is essential for buyers and investors. This project analyzes the housing market in <strong>Metro Manila</strong> using a dataset sourced from the Lamudi platform — employing <strong>Power BI</strong> for visualization and <strong>Python</strong> for data cleaning — to reveal key insights into property listings and market trends.
+      </p>
+      <div class="callout">
+        <strong>Disclaimer:</strong> The data presented here is based on a scraped Lamudi dataset and may not fully reflect actual market conditions in Metro Manila.
+      </div>
+    </div>
+    <hr class="section-rule">
 
-								<!-- This line is use to insert image -->
-								<p style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%" 
-									class="image featured" ><img src="project images/p-i-2/mm housing db.png" alt="" />
-								</p>
+    <!-- DATA OVERVIEW -->
+    <div class="section" id="s-data">
+      <p class="section-label">02 — Dataset</p>
+      <h2>Data Overview</h2>
+      <p>
+        The dataset was sourced from <a href="https://www.kaggle.com/datasets/klekzee/phillipines-housing-market?select=PH_Housing.csv" target="_blank" style="color:var(--accent2);text-decoration:underline">Kaggle</a>, containing real estate listings scraped from Lamudi Philippines.
+      </p>
 
-								<h3 style="margin-top: 2%;">Analysis and Findings</h3>
-								<h4 style="margin-top: 3%;">Median Prices</h4>
-								<p style="margin-top: 2%">Based on property listings from Lamudi, the median house price in Metro Manila was <strong>Php 28.65 million</strong>, with a median price of <strong>Php 212,580</strong> per square meter. Makati City, known for its central business district and luxurious villages, stood out with a staggering median price of Php 152 million and an average of Php 643,600 per square meter. Taguig, home to the upscale Bonifacio Global City, followed closely with a median price of Php 112 million and Php 280,500 per square meter. Other cities, such as Marikina (Php 9.7M), Valenzuela (Php 7.4M), and Caloocan (Php 4.5M), offered the most inexpensive options.  </p>
-								
-								<div class="row">
-									<article class="col-6 col-10-narrower" style="margin: 0 auto">
-										<!-- This line is use to insert image -->
-										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
-											class="image featured" ><img src="project images/p-i-2/mm1.png" alt=""/>
-										</a>
-									</article>
-									<article class="col-6 col-10-narrower" style="margin: 0 auto">
-										<!-- This line is use to insert image -->
-										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
-											class="image featured" ><img src="project images/p-i-2/mm2.png" alt="" />
-										</a>
-									</article>
-								</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>House ID</td><td>Text</td><td>Unique listing identifier</td></tr>
+          <tr><td>Description</td><td>Text</td><td>Property details and features</td></tr>
+          <tr><td>Location</td><td>Text</td><td>Full address including city and region</td></tr>
+          <tr><td>Price</td><td>Numeric</td><td>Listing price in Philippine Peso</td></tr>
+          <tr><td>Floor Area</td><td>Numeric</td><td>Interior area in square meters</td></tr>
+          <tr><td>Land Area</td><td>Numeric</td><td>Lot area in square meters</td></tr>
+        </tbody>
+      </table>
 
-								<h4 style="margin-top: 3%">Total Listings</h4>
-								<p style="margin-top: 2%">When it comes to the number of listings on the website, Muntinlupa had the highest at 140, followed by Quezon City (117 listings) and Parañaque (68 listings).  These areas generally offered larger land areas and more residential developments compared to central business districts like Makati or Taguig, where space is more limited, and prices are higher. </p>			
-														
-								<div class="row">
-								
-									<article class="col-6 col-10-narrower" style="margin: 0 auto">
-										<!-- This line is use to insert image -->
-										<a style="display: block; margin-top: 0%; margin-bottom: 0%; margin-left: 0%; width: 100%;" 
-											class="image featured" ><img src="project images/p-i-2/mm3.png" alt="" />
-										</a>
-									</article>
-								</div>
+      <div class="img-block">
+        <img src="project images/p-i-2/raw_data.png" alt="Raw dataset preview" loading="lazy">
+        <p class="img-caption">Raw dataset — as loaded before preprocessing</p>
+      </div>
+    </div>
+    <hr class="section-rule">
 
-								<h3 style="margin-top: 2%;">Insights</h3>
-								<p>The property market in Metro Manila displays significant variation in prices across different cities. Makati and Taguig, known for their luxurious villages and central business districts, stand out as the most expensive areas, reflecting their premium location. On the other hand, cities like Marikina, Valenzuela, and Caloocan offer more affordable housing options, making them attractive for buyers looking for inexpensive options.</p>
-								<p>In terms of listings, Muntinlupa, Quezon City, and Parañaque have the highest number of available properties, largely due to their larger land areas and residential developments. These cities provide more spacious and suburban living environments compared to the more densely populated business districts, where space is limited and prices are higher. This contrast highlights the diverse options available in Metro Manila's property market, catering to both upper and middle income groups.</p>
+    <!-- PREPROCESSING -->
+    <div class="section" id="s-prep">
+      <p class="section-label">03 — Preprocessing</p>
+      <h2>Data Preprocessing</h2>
 
-								<h3 style="margin-top: 3%;">Video Demo</h3>
-								<iframe style="display: block" width=100% height=520 src="https://www.youtube.com/embed/Ie8J9IOW9gM?si=s6xMfqTp7S6mhm1h" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <h3>1. Extracting City from Location</h3>
+      <p>The <code>Location</code> column contained full addresses. I extracted the city name by splitting on the delimiter comma and taking the last segment.</p>
+      <div class="img-block">
+        <img src="project images/p-i-2/a_delimiter.png" alt="Delimiter extraction" loading="lazy">
+        <p class="img-caption">Extracting city name from the Location column using delimiter split</p>
+      </div>
 
+      <h3>2. Filtering to Metro Manila</h3>
+      <p>
+        I prepared a mapping of Metro Manila cities from <a href="https://en.wikipedia.org/wiki/List_of_cities_and_municipalities_in_the_Philippines" target="_blank" style="color:var(--accent2);text-decoration:underline">Wikipedia</a>, then used a left join — with the NCR cities mapping as the left table — to subset only Metro Manila listings.
+      </p>
+      <div class="img-grid">
+        <div class="img-block">
+          <img src="project images/p-i-2/ncr cities.png" alt="NCR cities mapping" loading="lazy">
+          <p class="img-caption">NCR cities mapping table</p>
+        </div>
+        <div class="img-block">
+          <img src="project images/p-i-2/merge.png" alt="Left join merge" loading="lazy">
+          <p class="img-caption">Left join to filter Metro Manila listings</p>
+        </div>
+      </div>
 
-								<h3 style="margin-top: 3%;">Conclusion</h3>
-								<p>The Power BI dashboard is a great tool to show how the data can be presented and interpreted. It can provide interactive view into the Metro Manila housing market, highlighting trends and key metrics. Disclaimer: the data presented here are based on a dataset which scraped the Lamudi website. It may or may not reflect the actual market in Metro Manila.</p>
+      <h3>3. Classifying Housing Type</h3>
+      <p>Used <code>Text.Contains</code> on the Description column to tag each listing as Single Attached/Detached, Townhouse, Multiplex, or Other.</p>
+      <div class="img-block">
+        <img src="project images/p-i-2/type_house.png" alt="Housing type classification" loading="lazy">
+        <p class="img-caption">Conditional classification of housing type from description keywords</p>
+      </div>
 
-							</div>
+      <h3>4. Classifying Storey Level</h3>
+      <p>Applied the same <code>Text.Contains</code> approach to extract storey level (1-storey, 2-storey, etc.) from the description field.</p>
+      <div class="img-block">
+        <img src="project images/p-i-2/storey_level.png" alt="Storey level classification" loading="lazy">
+        <p class="img-caption">Storey level extracted from description keywords</p>
+      </div>
 
-						</div>
-					</div>
-				</section>
+      <h3>5. Handling Missing Prices</h3>
+      <p>
+        About 3% of the Price column was missing. I used <strong>median imputation grouped by city</strong> — a Python script calculated each city's median price and filled nulls accordingly.
+      </p>
+      <div class="img-block">
+        <pre><code class="language-python">import pandas as pd
 
-			<!-- Footer -->
-				<footer id="footer">
-					<ul class="icons">
-						<li><a href="https://github.com/iellmarbarroga" target= "_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
-						<li><a href="https://www.linkedin.com/in/iellmar-barroga/" target= "_blank" class="icon brands fab fa-linkedin"><span class="label">LinkedIn</span></a></li>
-					</ul>
-					<ul class="copyright">
-						<li> <a class="icon solid fa-envelope"><span class="label">Email</span> barroga.iig@gmail.com</a></li> 
-						<li><a class="cv-link" href="#" target= "_blank">CV</a></li> 
-					</ul>
-				</footer>
+df = pd.read_csv("MM_housing_dataset.csv", encoding='ISO-8859-1')
 
-		</div>
+# Step 1: Append a column to the table with the median price by city
+df['price_medians_city'] = df.groupby('City')['Price'].transform('median')
 
-		<!-- Scripts
-			<script src="../assets/js/cv-link.js"></script>
-			<script src="assets_2/js/jquery.min.js"></script>
-			<script src="assets_2/js/jquery.dropotron.min.js"></script>
-			<script src="assets_2/js/jquery.scrollex.min.js"></script>
-			<script src="assets_2/js/browser.min.js"></script>
-			<script src="assets_2/js/breakpoints.min.js"></script>
-			<script src="assets_2/js/util.js"></script>
-			<script src="assets_2/js/main.js"></script> -->
-			
-			<!-- Script for the CV link -->
-			<script src="../assets/js/cv-link.js"></script>
+# This is a variable containing the median price by city
+price_medians_city = df.groupby('City')['Price'].transform('median')
 
-	</body>
+# Step 2: Fill null values in the Price column with the median value by city
+df['Price'] = df['Price'].fillna(price_medians_city)
+
+# Step 3: Export the updated DataFrame to a CSV file
+df.to_csv('MM_housing_dataset_imputed_2.csv', index=False)</code></pre>
+        <p class="img-caption">Python script — median imputation grouped by city</p>
+      </div>
+
+    </div>
+    <hr class="section-rule">
+
+    <!-- KPIs -->
+    <div class="section" id="s-kpis">
+      <p class="section-label">04 — KPIs</p>
+      <h2>Key Performance Indicators</h2>
+      <p>The dashboard exposes four KPIs, each updating dynamically based on city, house type, and storey level filters.</p>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>KPI</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Median Price</td><td>Average listing price by city and type</td></tr>
+          <tr><td>Total Listings</td><td>Count of listings per city</td></tr>
+          <tr><td>Avg Price per sqm</td><td>Price density — cost per square meter</td></tr>
+          <tr><td>Land Area to Price Ratio</td><td>Evaluates land area pricing efficiency</td></tr>
+        </tbody>
+      </table>
+
+      <div class="img-block">
+        <img src="project images/p-i-2/mm housing db no deets.png" alt="Dashboard overview" loading="lazy">
+        <p class="img-caption">Dashboard — KPI section, filter pane, and metric parameter toggle (prices and total listings)</p>
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- FINDINGS -->
+    <div class="section" id="s-findings">
+      <p class="section-label">05 — Analysis & Findings</p>
+      <h2>Key Findings</h2>
+
+      <h3>Median Prices by City</h3>
+      <p>
+        The overall median house price in Metro Manila was <span class="hi-gold">₱28.65 million</span>, with a median of <span class="hi-gold">₱212,580 per sqm</span>.
+        <strong>Makati City</strong> stood out with a staggering median of ₱152M and ₱643,600/sqm — driven by its central business district and luxury villages.
+        <strong>Taguig</strong> (Bonifacio Global City) followed at ₱112M median and ₱280,500/sqm.
+      </p>
+      <div class="callout gold">
+        Most affordable cities: <strong>Marikina (₱9.7M)</strong>, <strong>Valenzuela (₱7.4M)</strong>, and <strong>Caloocan (₱4.5M)</strong> — making them attractive for buyers on a budget.
+      </div>
+
+      <div class="img-grid">
+        <div class="img-block">
+          <img src="project images/p-i-2/mm1.png" alt="Median price chart" loading="lazy">
+          <p class="img-caption">Median price by city</p>
+        </div>
+        <div class="img-block">
+          <img src="project images/p-i-2/mm2.png" alt="Price per sqm chart" loading="lazy">
+          <p class="img-caption">Median price per sqm by city</p>
+        </div>
+      </div>
+
+      <h3>Total Listings by City</h3>
+      <p>
+        <strong>Muntinlupa</strong> led with 140 listings, followed by <strong>Quezon City</strong> (117) and <strong>Parañaque</strong> (68). These suburban cities offer larger land areas and more active residential developments compared to Makati or Taguig, where space is constrained and prices are higher.
+      </p>
+      <div class="img-block">
+        <img src="project images/p-i-2/mm3.png" alt="Total listings by city" loading="lazy">
+        <p class="img-caption">Total listings by city</p>
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- INSIGHTS -->
+    <div class="section" id="s-insights">
+      <p class="section-label">06 — Insights</p>
+      <h2>What the Data Suggests</h2>
+
+      <div class="callout">
+        <strong>Price polarization is stark.</strong> Makati and Taguig operate in an entirely different tier — their medians are 4–5× the Metro Manila average. These aren't outliers; they reflect fundamentally different buyer segments.
+      </div>
+      <div class="callout gold">
+        <strong>Listings ≠ demand.</strong> The cities with the most listings (Muntinlupa, QC, Parañaque) are not the most expensive. High listing volume in suburban areas signals supply-driven availability, not premium pricing.
+      </div>
+      <p>
+        For buyers seeking value, the data points clearly to <strong>Marikina, Valenzuela, and Caloocan</strong> as the most affordable options in the metro. For investors targeting high-value assets, <strong>Makati and Taguig</strong> remain the premium markets — but entry prices reflect that.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- Video -->
+    <div class="section" id="s-demo">
+      <p class="section-label">07 — Demo</p>
+      <h2>Video Demo</h2>
+      <div class="img-block" onclick="openVideoLightbox('https://www.youtube.com/embed/Ie8J9IOW9gM')">
+        <img src="https://img.youtube.com/vi/Ie8J9IOW9gM/maxresdefault.jpg" alt="Dengue Dashboard Video Demo" loading="lazy">
+        <p class="img-caption">▶ Click to watch demo</p>
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- CONCLUSION -->
+    <div class="section" id="s-conclusion">
+      <p class="section-label">08 — Conclusion</p>
+      <h2>Conclusion</h2>
+      <p>
+        This Power BI dashboard provides an interactive view into Metro Manila's property market, surfacing price trends, listing distribution, and city-level comparisons that raw data alone wouldn't reveal. The combination of Power Query preprocessing and Python-based imputation ensured the data was clean and reliable before any visualization was built.
+      </p>
+      <div class="callout">
+        <strong>Tools used:</strong> Power BI · Power Query · Python (pandas) · Kaggle (Lamudi dataset)
+      </div>
+    </div>
+
+  </article>
+</div>
+
+<!-- MOBILE TOC -->
+<button id="toc-btn" aria-label="Table of contents">☰</button>
+<div class="toc-drawer" id="toc-drawer">
+  <button class="toc-drawer-close" id="toc-drawer-close">✕ Close</button>
+  <ul id="toc-drawer-list"></ul>
+</div>
+
+<script>
+const sections = [
+  { id: 's-intro',      label: 'Introduction' },
+  { id: 's-data',       label: 'Data Overview' },
+  { id: 's-prep',       label: 'Preprocessing' },
+  { id: 's-kpis',       label: 'KPIs' },
+  { id: 's-findings',   label: 'Findings' },
+  { id: 's-insights',   label: 'Insights' },
+  { id: 's-demo',       label: 'Video Demo' },
+  { id: 's-conclusion', label: 'Conclusion' },
+];
+</script>
+
+<!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-left">
+        <div>© 2026 Iellmar Barroga</div>
+        <div>Data Analyst · Philippines</div>
+      </div>
+      <nav class="footer-links">
+        <a href="https://github.com/iellmarbarroga" target="_blank">GitHub</a>
+        <a href="https://www.linkedin.com/in/iellmar-barroga/" target="_blank">LinkedIn</a>
+        <a href="mailto:barroga.iig@gmail.com">Email</a>
+        <a class="cv-link" href="#" target= "_blank">CV</a>
+      </nav>
+    </footer>
+
+<script src="../assets/js/table_of_contents.js"></script>
+<script src="../assets/js/cv-link.js"></script>
+<script src="../assets/js/custom-image-popup.js"></script>
+
+</body>
 </html>
