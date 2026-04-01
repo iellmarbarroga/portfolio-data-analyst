@@ -1,114 +1,148 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Data Analysis Portfolio — Iellmar Barroga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/portfolio.css">
+</head>
+<body>
 
-<html>
-	<head>
-		<title>Data Analysis Portfolio by Iellmar Barroga</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-	</head>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <p class="hero-eyebrow">Portfolio — 2025</p>
+        <h1>Hello! I'm <em>Iellmar Barroga,</em> a data analyst driven by one belief:</h1>
+        <p class="hero-quote">good decisions start with trustworthy data.</p>
+        <p class="hero-bio">
+          Specializing in data validation and master data management, with hands-on experience
+          ensuring data integrity across complex multi-system environments.
+          Proficient in SQL, Python, and Power BI.
+        </p>
+        <div class="hero-links">
+          <a href="https://github.com/iellmarbarroga" target="_blank">GitHub</a>
+          <a href="https://www.linkedin.com/in/iellmar-barroga/" target="_blank">LinkedIn</a>
+          <a href="mailto:barroga.iig@gmail.com">Email</a>
+          <a href="#" class="cv-link">CV</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="avatar-wrap">
+          <img src="images/avatar_pic.JPG" alt="Iellmar Barroga">
+        </div>
+      </div>
+    </div>
+  </section>
 
-	<body class="is-preload">
+  <!-- TOOLS -->
+  <section class="tools-section">
+    <p class="section-label">Tools & Technologies</p>
+    <div class="tools-row">
+      <div class="tool-item">
+        <img src="images/sql_logo2.png" alt="SQL">
+        <span>SQL</span>
+      </div>
+      <div class="tool-item">
+        <img src="images/python_logo2.png" alt="Python">
+        <span>Python</span>
+      </div>
+      <div class="tool-item">
+        <img src="images/pbi_logo2.png" alt="Power BI">
+        <span>Power BI</span>
+      </div>
+      <div class="tool-item">
+        <img src="images/excel_logo2.png" alt="Excel">
+        <span>Excel</span>
+      </div>
+    </div>
+  </section>
 
-		<!-- Header -->
-			<header id="header">
-				<div class="inner">
-					<a href="#" class="image avatar" style="width: 140px; height: auto;"><img src="images/avatar_pic.JPG" alt=""></a>
-					<h1>Hello! I'm <strong>Iellmar Barroga,</strong> <br />
-						a data validation specialist, driven by one 
-						belief: good decisions start with trustworthy data.</h1>
-				</div>
-			</header>
+  <!-- PROJECTS -->
+  <section class="projects-section">
+    <div class="projects-header">
+      <p class="section-label">Case Studies</p>
+      <h2>My Projects</h2>
+    </div>
 
-		<!-- Main -->
-			<div id="main">
+    <div class="projects-grid">
 
-				<!-- One -->
-					<section id="one">
-						<header class="major">
-							<h2>About Me</h2>
-						</header>
-						<p style="font-size:large;">Data analyst specializing in data validation and master data management, with hands-on experience ensuring data integrity across complex multi-system environments. 
-							Proficient in SQL, Python, and Power BI, with a strong foundation built through real-world projects and continuous self-development.</p>
+      <article class="project-card">
+        <a href="project_articles/dengue-dashboard.html">
+          <div class="card-thumb">
+            <img src="images/thumbs/dengue dashboard.jpg" alt="Dengue Dashboard">
+            <div class="card-tags">
+              <span>Power BI</span>
+              <span>Public Health</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="card-number">01</p>
+            <h3>Visualizing Dengue Trends in the Philippines</h3>
+            <p>Exploring key metrics, seasonal patterns, and regional insights from five years of dengue data.</p>
+            <span class="card-cta">Read case study →</span>
+          </div>
+        </a>
+      </article>
 
-						<!-- Logos for tech skills -->
-						<div>
-							<div class="logo-container">
-								<img src="images/sql_logo2.png" alt="SQL Logo">
-								<div class="overlay"></div>
-							</div>
-							<div class="logo-container">
-								<img src="images/python_logo2.png" alt="Python Logo">
-								<div class="overlay"></div>
-							</div>
-							<div class="logo-container">
-								<img src="images/pbi_logo2.png" alt="Power BI Logo">
-								<div class="overlay"></div>
-							</div>
-							<div class="logo-container">
-								<img src="images/excel_logo2.png" alt="Excel Logo">
-								<div class="overlay"></div>
-							</div>
-						</div>
+      <article class="project-card">
+        <a href="project_articles/housing-market-dashboard.html">
+          <div class="card-thumb">
+            <img src="images/thumbs/housing market dashboard.jpg" alt="Housing Market Dashboard">
+            <div class="card-tags">
+              <span>Power BI</span>
+              <span>Python</span>
+              <span>Real Estate</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="card-number">02</p>
+            <h3>Analyzing the Housing Market in Metro Manila</h3>
+            <p>Understanding housing market insights in the capital region of the Philippines.</p>
+            <span class="card-cta">Read case study →</span>
+          </div>
+        </a>
+      </article>
 
-						<!-- <ul class="actions"> 
-							<li><a style="margin-top: 10%;" href="https://www.datacamp.com/portfolio/barrogaiig" target= "_blank" class="button">View DataCamp Certifications</a></li>
-						</ul> -->
+      <article class="project-card">
+        <a href="project_articles/video-games-analysis.html">
+          <div class="card-thumb">
+            <img src="images/thumbs/Video game analysis.jpg" alt="Video Game Sales Analysis">
+            <div class="card-tags">
+              <span>Excel</span>
+              <span>Gaming</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="card-number">03</p>
+            <h3>Analyzing Global Video Game Sales</h3>
+            <p>Exploring patterns in the video game market from the 1980s to the 2010s.</p>
+            <span class="card-cta">Read case study →</span>
+          </div>
+        </a>
+      </article>
 
-					</section>
+    </div>
+  </section>
 
-				<!-- Two -->
-					<section id="two">
-						<h2>My Projects</h2>
-						<div class="row">
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="project_articles/dengue-dashboard.html" target= "_blank" class="image fit thumb "><img src="images/thumbs/dengue dashboard.jpg" alt="" /></a>
-								<h3>Visualizing Dengue Trends in the Philippines: A Power BI Dashboard Analysis</h3>
-								<p>Exploring Key Metrics, Seasonal Patterns, and Regional Insights from Five Years of Dengue Data in the country</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="project_articles/housing-market-dashboard.html" target= "_blank" class="image fit thumb"><img src="images/thumbs/housing market dashboard.jpg" alt="" /></a>
-								<h3>Analyzing the Housing Market in Metro Manila: Insights from Power BI</h3>
-								<p>Understanding housing market insights in the capital region and largest metropolitan area of the Philippines</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="project_articles/video-games-analysis.html" target= "_blank" class="image fit thumb"><img src="images/thumbs/Video game analysis.jpg" alt="" /></a>
-								<h3>Analyzing Global Video Game Sales: Trends and Insights</h3>
-								<p>Exploring Patterns in the Video Game Market from 1980s to 2010s Through Data Analysis</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="project_articles/salaries-analysis.html" target= "_blank" class="image fit thumb"><img src="images/thumbs/job front.jpg" alt="" /></a>
-								<h3> Navigating High-Paying Careers: An Analysis of Salary Trends</h3>
-								<p>Analyzing 2023-2024 LinkedIn Job Postings to Uncover Salary Patterns by Role and Industry.</p>
-							</article>
-						</div>
-					</section>
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-left">
+      <div>© 2026 Iellmar Barroga</div>
+      <div>Data Analyst · Philippines</div>
+    </div>
+    <nav class="footer-links">
+      <a href="https://github.com/iellmarbarroga" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/iellmar-barroga/" target="_blank">LinkedIn</a>
+      <a href="mailto:barroga.iig@gmail.com">Email</a>
+      <a href="#" class="cv-link">CV</a>
+    </nav>
+  </footer>
 
-			</div>
+  <script src="assets/js/cv-link.js"></script>
+  <script src="assets/js/portfolio.js"></script>
 
-		<!-- Footer -->
-			<footer id="footer">
-				<div class="inner">
-					<ul class="icons">
-						<li><a href="https://github.com/iellmarbarroga" target= "_blank" class="icon brands fa-github"><span class="label">Github</span></a></li>
-						<li><a href="https://www.linkedin.com/in/iellmar-barroga/" target= "_blank" class="icon brands fab fa-linkedin"><span class="label">LinkedIn</span></a></li>
-					</ul>
-					<a> </a>
-					<ul class="copyright">
-						<li> <a class="icon solid fa-envelope"><span class="label">Email</span> barroga.iig@gmail.com</a></li> 
-						<li><a class="cv-link" href="#" target= "_blank">CV</a></li>
-					</ul>
-				</div>
-			</footer>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.poptrox.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<script src="assets/js/cv-link.js"></script>
-
-	</body>
+</body>
 </html>
