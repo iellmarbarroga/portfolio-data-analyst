@@ -11,4 +11,3 @@ function setCVLink() {
 
 // Run the function when the page loads
 window.onload = setCVLink;
-
