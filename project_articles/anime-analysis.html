@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyAnimeList Analysis — Iellmar Barroga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/project_article.css">
+  <!-- favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%232471a3'/><text x='50' y='72' font-size='68' font-family='serif' font-weight='bold' text-anchor='middle' fill='white'>IB</text></svg>">
+
+  <!--- This is for the "script-code-look" on the website page-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+
+  <style>
+    :root { --accent: #2471a3; --accent2: #1a5276; }
+  </style>
+</head>
+
+<!--For the pop-up of images/video to full screen-->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="">
+  <iframe id="lightbox-video" src="" allowfullscreen
+    style="display:none; width:90vw; max-width:1100px; height:56.25vw; max-height:80vh; border:none; border-radius:4px;">
+  </iframe>
+</div>
+
+<body>
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-back" href="../index.html">← Back to Portfolio</a>
+  <span class="nav-title">Iellmar Barroga</span>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-meta">
+    <span class="tag blue">Anime</span>
+    <span class="tag purple">Python</span>
+    <span class="tag">Data Analysis</span>
+    <span class="tag">API</span>
+    <span class="tag">Statistics</span>
+  </div>
+  <h1>MyAnimeList User Behavior<br>&amp; Anime Analysis</h1>
+  <p class="hero-sub">
+    What makes an anime universally loved? Exploring 500 real user profiles and 984 top-ranked anime
+    through the Jikan API — digging into generational taste, gender preference, and the titles that transcend demographics.
+  </p>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-value blue">984</div>
+      <div class="kpi-label">Top Anime</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value blue">500</div>
+      <div class="kpi-label">User Profiles</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value purple">5,000+</div>
+      <div class="kpi-label">API Calls</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value">4</div>
+      <div class="kpi-label">Datasets</div>
+    </div>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- SIDEBAR TOC -->
+  <aside class="toc">
+    <p class="toc-label">Contents</p>
+    <ul id="toc-list"></ul>
+  </aside>
+
+  <!-- ARTICLE -->
+  <article class="article" id="article">
+
+    <!-- INTRODUCTION -->
+    <div class="section" id="s-intro">
+      <p class="section-label">01 — Overview</p>
+      <h2>Introduction</h2>
+      <p>
+        If you've watched anime from time to time, you might have noticed that there are themes made to target specific demographics.
+        There's anime made for teenage boys and girls, and for adult men and women — or in more accurate terms, shonen, shoujo, seinen, and josei respectively.
+      </p>
+      <p>
+        When I started this project, I had one simple question: <em>is there a universally-loved anime across demographics?</em>
+      </p>
+      <p>
+        What began as a curiosity turned into a full-scale data analytics project with 500 random users extracted, 984 top-ranked anime, thousands of API calls, and a lot of waiting for rate limits.
+      </p>
+      <div class="callout blue">
+        <strong>Goal:</strong> Use real MAL API data to answer real questions about how people consume anime across age groups and genders — and to find the titles that genuinely transcend demographic boundaries.
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- WHY THIS PROJECT -->
+    <div class="section" id="s-why">
+      <p class="section-label">02 — Motivation</p>
+      <h2>Why This Project?</h2>
+      <p>
+        I wanted a portfolio project that was technically challenging but also genuinely interesting to me.
+        I'm a long-time anime fan (please don't ask me about my favorite anime or we'd talk for hours — it's Frieren, by the way),
+        and MyAnimeList has one of the richest publicly accessible datasets I could find: user demographics, watching behavior, favorites, scores, genres.
+      </p>
+      <p>
+        The goal was simple: use real API data to answer real questions about how people consume anime across age groups and genders.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- DATA -->
+    <div class="section" id="s-data">
+      <p class="section-label">03 — Dataset</p>
+      <h2>The Data</h2>
+      <p>
+        Everything came from the <a href="https://docs.api.jikan.moe" target="_blank" style="color:var(--accent2);text-decoration:underline">Jikan REST API v4</a> — an unofficial but reliable wrapper around MyAnimeList's data. No authentication required, completely free.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-python">import requests
+import pandas as pd
+import time
+
+# Pull top 1000 anime (40 pages x 25)
+anime_list = []
+
+for page in range(1, 41):
+    url = f"https://api.jikan.moe/v4/top/anime?page={page}"
+    response = requests.get(url)
+    data = response.json()
+    anime_list.extend(data['data'])
+    time.sleep(0.5)
+    print(f"Page {page} done — {len(anime_list)} anime collected")
+
+df_top_anime = pd.DataFrame(anime_list)
+df_top_anime.to_csv('top_1000_anime.csv', index=False)</code></pre>
+        <p class="img-caption">Collection script — pulling top anime from Jikan API with rate-limit handling</p>
+      </div>
+
+      <p>I collected four datasets:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Dataset</th>
+            <th>Source Endpoint</th>
+            <th>Records</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Top-ranked anime</td><td>/top/anime</td><td>984 titles</td></tr>
+          <tr><td>Random user profiles</td><td>/random/users</td><td>500 users</td></tr>
+          <tr><td>User favorites</td><td>/users/{username}/favorites</td><td>Per user</td></tr>
+          <tr><td>User statistics</td><td>/users/{username}/statistics</td><td>Per user</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        The collection wasn't glamorous. The random users endpoint only returns users with complete profiles about <strong>10% of the time</strong>. That means I needed roughly 5,000 API calls just to collect 500 usable users.
+      </div>
+
+      <p>
+        One interesting finding even before analysis: <strong>26 users (5.2%) had deleted or privatized their accounts</strong> between when I first collected their usernames and when I tried to enrich their data.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- DATA LIMITATIONS -->
+    <div class="section" id="s-limits">
+      <p class="section-label">04 — Limitations</p>
+      <h2>Data Limitations</h2>
+      <p>Before the findings, here's what you should know about the data:</p>
+
+      <h3>On Users</h3>
+      <p>
+        Only users who filled in their birthday and gender were included. The dataset skews heavily male (73%) which actually mirrors MAL's known gender demographic
+        — 363 Male, 129 Female, 7 Non-Binary. Unfortunately, the Non-Binary count was too small for significant statistical analysis so those entries were dropped.
+      </p>
+
+      <h3>On Age Groups</h3>
+      <p>
+        The 25–34 group makes up 62% of the dataset. They dominate the numbers. The 45+ group only has 16 users so take the findings from it with a grain of salt. In addition, only 1 user under 18 was found so it was dropped.
+      </p>
+
+      <div class="img-block">
+        <div class="img-block" onclick="openLightbox(this)">
+          <img src="../project_articles/project images/p-i-anime/age_group_vs_gender.png" alt="User Distribution" loading="lazy">
+          <p class="img-caption">User distribution by age group and gender</p>
+        </div>
+      </div>
+
+      <h3>On Anime</h3>
+      <p>
+        The dataset only includes the top 984 anime by score — scores start at 7.9. This is the elite tier of MAL. I originally planned to extract the top 1,000 anime but 26 entries had missing rank values and so these were dropped.
+      </p>
+
+    </div>
+    <hr class="section-rule">
+
+    <!-- FINDINGS -->
+    <div class="section" id="s-findings">
+      <p class="section-label">05 — Analysis &amp; Findings</p>
+      <h2>What I Found</h2>
+
+      <h3>The Score Distribution</h3>
+      <p>
+        Top anime scores cluster tightly between <strong>7.9 and 8.2</strong>, with a long right tail toward 9.2.
+      </p>
+
+      <div class="callout">
+        Only a handful ever break 9.0 barrier — Frieren, FMA Brotherhood, and Attack on Titan to name a few. The distribution is right-skewed, which makes sense: it's genuinely hard to be exceptional.
+      </div>
+
+      <div class="img-block">
+        <div class="img-block" onclick="openLightbox(this)">
+          <img src="../project_articles/project images/p-i-anime/score_distrib.png" alt="Distribution of anime scores" loading="lazy">
+          <p class="img-caption">Distribution of anime scores across the top 984 — right-skewed, clustering between 7.9–8.2</p>
+        </div>
+      </div>
+
+      <p>
+        Score and popularity are strongly correlated. The most popular anime tends to also be the highest rated — but there are outliers. Some niche titles score in the 8.2+ range with relatively few members (around a few thousand members): small but passionate fanbases scoring their favorites quite high.
+      </p>
+
+      <i>Note: the member count is the number of MAL users who added the anime to their personal list (watching, completed, plan-to-watch, etc.).</i>
+
+      <div class="img-block">
+        <div class="img-block" onclick="openLightbox(this)">
+          <img src="../project_articles/project images/p-i-anime/score_vs_popularity.png" alt="Score vs popularity scatter plot" loading="lazy">
+          <p class="img-caption">Score vs. member count — strong correlation with notable outliers</p>
+        </div>
+      </div>
+
+      <h3>Parsing the Genres Column</h3>
+      <p>
+        The <code>genres</code> column as returned by the Jikan API is stored as a <strong>list of dictionaries</strong> — each genre is a JSON object containing its MAL ID, type, and name. This isn't directly usable for analysis.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-python">print("\nSample of genres column:")
+print(df['genres'].head())</code></pre>
+        <pre><code class="language-plaintext">Sample of genres column:
+0    [{'mal_id': 2, 'type': 'anime', 'name': 'Adven...
+1    [{'mal_id': 2, 'type': 'anime', 'name': 'Adven...
+2    [{'mal_id': 1, 'type': 'anime', 'name': 'Actio...
+3    [{'mal_id': 1, 'type': 'anime', 'name': 'Actio...
+4    [{'mal_id': 8, 'type': 'anime', 'name': 'Drama...
+Name: genres, dtype: object</code></pre>
+        <p class="img-caption">Output — nested JSON objects, not yet usable. Take note of the 'name' key.</p>
+      </div>
+
+      <p>
+        The first step was extracting just the genre names. <code>ast.literal_eval</code> converts the raw string representation back into an actual Python list, then a list comprehension pulls only the <code>name</code> field from each dictionary.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-python">import ast
+
+def extract_genre_names(value):
+    try:
+        if isinstance(value, str):
+            value = ast.literal_eval(value)
+        return [item['name'] for item in value]
+    except:
+        return []
+
+df['genres'] = df['genres'].apply(extract_genre_names)</code></pre>
+        <p class="img-caption">Extracting genre names from nested dictionaries</p>
+      </div>
+
+      <div class="img-block">
+        <pre><code class="language-python">print(df[['title_english','genres']].head())</code></pre>
+        <pre><code class="language-plaintext">                            title_english                           genres
+0           Frieren: Beyond Journey's End       [Adventure, Drama, Fantasy]
+1  Frieren: Beyond Journey's End Season 2       [Adventure, Drama, Fantasy]
+2        Fullmetal Alchemist: Brotherhood  [Action, Adventure, Drama, Fa..]
+3      Chainsaw Man - The Movie: Reze Arc                 [Action, Fantasy]
+4                             Steins;Gate         [Drama, Sci-Fi, Suspense]</code></pre>
+        <p class="img-caption">Output — clean genre name lists per anime</p>
+      </div>
+
+      <p>
+        The second step was creating a <strong>separate genre table</strong>. Since one anime can belong to multiple genres, keeping them in a list column makes aggregation impossible. <code>explode()</code> unpacks the list so each genre gets its own row — similar to a typical relational table.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-python">df_genres = df[['mal_id', 'title', 'genres']].copy()
+df_genres = df_genres.explode('genres')
+df_genres = df_genres.rename(columns={'genres': 'genre'})
+df_genres = df_genres.reset_index(drop=True)
+
+df_genres.to_csv('anime_genres.csv', index=False)</code></pre>
+        <p class="img-caption">Exploding the genre list into a separate long-format table</p>
+      </div>
+
+      <div class="img-block">
+        <pre><code class="language-python">print("Main table shape:", df.shape)
+print("Genre table shape:", df_genres.shape)
+print(df_genres.head(10))</code></pre>
+        <pre><code class="language-plaintext">Main table shape: (984, 17)
+Genre table shape: (2354, 3)
+
+  mal_id                             title      genre
+0   52991                 Sousou no Frieren  Adventure
+1   52991                 Sousou no Frieren      Drama
+2   52991                 Sousou no Frieren    Fantasy
+3   59978      Sousou no Frieren 2nd Season  Adventure
+4   59978      Sousou no Frieren 2nd Season      Drama
+5   59978      Sousou no Frieren 2nd Season    Fantasy
+6    5114  Fullmetal Alchemist: Brotherhood     Action
+7    5114  Fullmetal Alchemist: Brotherhood  Adventure
+8    5114  Fullmetal Alchemist: Brotherhood      Drama
+9    5114  Fullmetal Alchemist: Brotherhood    Fantasy</code></pre>
+      <p class="img-caption">Output — 984 anime expanded to 2,354 rows, averaging ~2.4 genres per anime</p>
+      </div>
+
+      <h3>The Genre Landscape</h3>
+      <p>
+        Action dominates the top 984 almost 350 anime counts, followed by Drama and Comedy. 
+      </p>
+
+      <div class="img-block">
+        <div class="img-block" onclick="openLightbox(this)">
+          <img src="../project_articles/project images/p-i-anime/top_genre.png" alt="Genres of top anime" loading="lazy">
+          <p class="img-caption">Top Anime Genres</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        But when you look at <strong>average score by genre</strong>, the differences are almost negligible — everything clusters around 8.1–8.2. Genre alone doesn't determine quality in elite anime.
+      </div>
+
+      <div class="img-block">
+        <div class="img-block" onclick="openLightbox(this)">
+          <img src="../project_articles/project images/p-i-anime/avg_score_genre.png" alt="Average genre score of top anime" loading="lazy">
+          <p class="img-caption">Average score by genre — remarkably flat across the board</p>
+        </div>
+      </div>
+
+      <h3>The Most Favorited Anime</h3>
+      <p>Across all 500 users, the top favorites are the following:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Anime</th>
+            <th>Favorites</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Fullmetal Alchemist: Brotherhood</td><td class="dot-blue">58</td></tr>
+          <tr><td>2</td><td>Steins;Gate</td><td class="dot-blue">54</td></tr>
+          <tr><td>3</td><td>Death Note</td><td>46</td></tr>
+          <tr><td>3</td><td>One Piece</td><td>46</td></tr>
+          <tr><td>5</td><td>Hunter x Hunter (2011)</td><td>42</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout blue">
+        FMA Brotherhood and Steins;Gate are in a different tier. The gap between #2 and #3 is bigger than it looks.
+      </div>
+
+      <div class="img-block">
+        <div class="img-block" onclick="openLightbox(this)">
+          <img src="../project_articles/project images/p-i-anime/fave_anime_by_users.png" alt="Top favorited anime bar chart" loading="lazy">
+          <p class="img-caption">Top 10 most favorited anime across all 500 users</p>
+        </div>
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- GENERATIONAL -->
+    <div class="section" id="s-generational">
+      <p class="section-label">06 — Generational Taste</p>
+      <h2>The Generational Question</h2>
+      <p>
+        <strong>Does your age predict what era of anime you love?</strong> Short answer: yes, significantly.
+      </p>
+      <p>
+        Audience between 18-24 and 25-34 have their average year of their favorite anime to be Post-2010 while audience between 35-44 and 45+ have their average year of their favorite anime to be Pre-2010.
+      </p>
+
+      <div class="img-block">
+        <div class="img-block" onclick="openLightbox(this)">
+          <img src="../project_articles/project images/p-i-anime/generational_boxplot.png" alt="Average year of favorite anime by age group" loading="lazy">
+          <p class="img-caption">Average year of favorite anime by age group</p>
+        </div>
+      </div>
+
+      <p>
+        I ran a one-way ANOVA on the start year of each user's favorite anime grouped by age to determine if there is a significant difference of the average year preferences. F=31.26, p&lt;0.001. Then a Tukey HSD post-hoc to find exactly which groups differed.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-python">from scipy import stats
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+age_groups = ['18-24', '25-34', '35-44', '45+']
+
+# One-way ANOVA
+groups = [df[df['age_group']==g]['fav_year'] for g in age_groups]
+f_stat, p_val = stats.f_oneway(*groups)
+print(f"F={f_stat:.2f}, p={p_val:.4f}")
+if p_value < 0.05:
+    print("Result: SIGNIFICANT ✅ — age groups prefer different eras")
+else:
+    print("Result: NOT SIGNIFICANT ❌ — no era diff between age groups")</code></pre>
+
+        <pre><code class="language-plaintext">F=31.26, p=0.0000
+Result: SIGNIFICANT ✅ — age groups prefer different eras</code></pre>
+
+        <p class="img-caption">One-way ANOVA to determine if age groups have significantly different anime era preference</p>
+      </div>
+
+      <div class="img-block">
+        <pre><code class="language-python">from scipy import stats
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+age_groups = ['18-24', '25-34', '35-44', '45+']
+
+# One-way ANOVA
+groups = [df[df['age_group']==g]['fav_year'] for g in age_groups]
+f_stat, p_val = stats.f_oneway(*groups)
+print(f"F={f_stat:.2f}, p={p_val:.4f}")</code></pre>
+
+        <pre><code class="language-plaintext">Multiple Comparison of Means - Tukey HSD, FWER=0.05 
+====================================================
+group1 group2 meandiff p-adj   lower   upper  reject
+----------------------------------------------------
+ 18-24  25-34  -1.2178 0.0089 -2.2115 -0.2241   True
+ 18-24  35-44  -5.1728    0.0   -6.59 -3.7557   True
+ 18-24    45+  -2.5466 0.0825  -5.305  0.2117  False
+ 25-34  35-44  -3.9551    0.0 -5.1814 -2.7288   True
+ 25-34    45+  -1.3288 0.5747 -3.9942  1.3365  False
+ 35-44    45+   2.6262 0.0835 -0.2242  5.4766  False
+----------------------------------------------------</code></pre>
+
+        <p class="img-caption">Tukey HSD — identifying which age groups significantly differ in anime era preference</p>
+      </div>
+
+      <p>The Tukey HSD post-hoc test revealed where the generational divide actually lies. Three pairs were statistically significant:</p>
+      <p><strong>18–24 vs 25–34</strong> (meandiff = −1.22, p = 0.009) — the youngest group favors anime about 1.2 years newer than the 25–34 group. Significant different, but the smallest among all groups. It means that these two groups are broadly watching from the same era.</p>
+      <p><strong>18–24 vs 35–44</strong> (meandiff = −5.17, p < 0.001) — the strongest finding. The 18–24 group favors anime roughly 5 years newer than the 35–44 group. These two demographics are watching from almost entirely different eras.</p>
+      <p><strong>25–34 vs 35–44</strong> (meandiff = −3.96, p < 0.001) — a clear divide. The 25–34 group also skews toward newer anime compared to 35–44, though not as extreme as the youngest group.</p>
+      <p>The 45+ group showed no significant difference against any other age group — not 18–24, not 25–34, not even 35–44. 
+        This is almost certainly a sample size problem rather than a genuine finding. With only 16 users in that bracket, the test simply didn't have enough statistical power to detect a difference even if one exists. </p>
+      
+      <div class="callout">
+        <strong>The real generational fault line is the 35–44 group.</strong> The era of their favorite anime are significantly different from both younger groups, favoring anime that is 4–5 years older on average compared to what the younger groups' era preference. The 18–24 and 25–34 groups are watching from a much more similar era.
+      </div>
+
+      <p>The decade breakdown tells the story clearly:</p>
+
+      <div class="img-block">
+        <pre><code class="language-python">for age_group in age_groups:
+  data = df[df['age_group'] == age_group]['start_year'].dropna()
+
+  # Create decade bins
+  bins = [1965, 1979, 1989, 1999, 2009, 2019, 2030]
+  labels = ['1965-1979', '1980-1989', '1990-1999', '2000-2009', '2010-2019', '2020+']
+
+  decade = pd.cut(data, bins=bins, labels=labels)
+  counts = decade.value_counts().sort_index()
+  pct = (counts / counts.sum() * 100).round(2)
+
+  result = pd.DataFrame({'Count': counts, 'Percentage': pct.astype(str) + '%'})
+
+  print(f"\nAge Group: {age_group} (n={len(data)})")
+  print(result.to_string())</code></pre>
+        <p class="img-caption">Counting the year of favorite anime using bins (<code>pd.cut</code>)</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Decade</th>
+            <th>18–24</th>
+            <th>25–34</th>
+            <th>35–44</th>
+            <th>45+</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2000–2009</td>
+            <td>20.55%</td>
+            <td>31.16%</td>
+            <td class="dot-red">58.86%</td>
+            <td class="dot-red">41.82%</td>
+          </tr>
+          <tr>
+            <td>2010–2019</td>
+            <td class="dot-blue">51.19%</td>
+            <td class="dot-blue">52.27%</td>
+            <td>21.74%</td>
+            <td>30.91%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        The 35–44 group is remarkable — nearly 59% of their favorites are from the 2000s. They grew up with Naruto, Death Note, Code Geass, and FMA. That's their anime.
+        The 18–24 group is almost a mirror image, with 51% from the 2010s.
+      </p>
+
+      <div class="img-block">
+        <div class="img-block" onclick="openLightbox(this)">
+          <img src="../project_articles/project images/p-i-anime/generational_histogram.png" alt="Average year of favorite anime by age group" loading="lazy">
+          <p class="img-caption">Histogram of the year of their favorite anime by age group</p>
+        </div>
+      </div>
+    </div>
+    <hr class="section-rule">
+
+
+    <!-- UNIVERSAL ANIME -->
+    <div class="section" id="s-universal">
+      <p class="section-label">07 — Universal Appeal</p>
+      <h2>The Universal Anime</h2>
+      <p>
+        This was the finding I was most curious about: what are the universally loved anime across age groups and genders?
+      </p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Score</th>
+            <th>Year</th>
+            <th>Genres</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monster</td>
+            <td>TV</td>
+            <td>8.89</td>
+            <td>2004</td>
+            <td>Drama, Mystery, Suspense</td>
+          </tr>
+          <tr>
+            <td>Cowboy Bebop</td>
+            <td>TV</td>
+            <td>8.75</td>
+            <td>1998</td>
+            <td>Action, Award Winning, Sci-Fi</td>
+          </tr>
+          <tr>
+            <td>Death Note</td>
+            <td>TV</td>
+            <td>8.62</td>
+            <td>2006</td>
+            <td>Supernatural, Suspense</td>
+          </tr>
+          <tr>
+            <td>Yojouhan Shinwa Taikei (The Tatami Galaxy)</td>
+            <td>TV</td>
+            <td>8.55</td>
+            <td>2010</td>
+            <td>Award Winning, Comedy, Mystery, Romance, Suspense</td>
+          </tr>
+          <tr>
+            <td>JoJo no Kimyou na Bouken Part 4: Diamond wa Kudakenai</td>
+            <td>TV</td>
+            <td>8.50</td>
+            <td>2016</td>
+            <td>Action, Adventure</td>
+          </tr>
+          <tr>
+            <td>Naruto: Shippuuden</td>
+            <td>TV</td>
+            <td>8.29</td>
+            <td>2007</td>
+            <td>Action, Adventure, Fantasy</td>
+          </tr>
+          <tr>
+            <td>Fullmetal Alchemist</td>
+            <td>TV</td>
+            <td>8.12</td>
+            <td>2003</td>
+            <td>Action, Adventure, Award Winning, Drama, Fantasy</td>
+          </tr>
+          <tr>
+            <td>Black Lagoon</td>
+            <td>TV</td>
+            <td>8.03</td>
+            <td>2006</td>
+            <td>Action</td>
+          </tr>
+          <tr>
+            <td>Bleach</td>
+            <td>TV</td>
+            <td>7.99</td>
+            <td>2004</td>
+            <td>Action, Adventure, Supernatural</td>
+          </tr>
+          <tr>
+            <td>Fairy Tail</td>
+            <td>TV</td>
+            <td>7.57</td>
+            <td>2009</td>
+            <td>Action, Adventure, Fantasy</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        Three things immediately stand out. First, <strong>every single one is a TV series</strong> — not a movie, not an OVA. Long-form storytelling seems to be the prerequisite for universal appeal. Second, <strong>all aired between 1998 and 2016</strong>. Nothing recent made the list. 
+        Lastly, universally-loved genres are <strong>Action</strong>, <strong>Adventure</strong>, <strong>Award-Winning</strong>, and <strong>Suspense</strong>.
+      </div>
+      <p>
+        Fairy Tail is the interesting outlier — it doesn't even rank in the top 984 by score (7.57), but it shows up in favorites across every demographic. Broad appeal doesn't always correlate with critical reception.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- GENDER -->
+    <div class="section" id="s-gender">
+      <p class="section-label">08 — Gender &amp; Taste</p>
+      <h2>The Gender Taste Gap</h2>
+      <p>
+        I ran a chi-square test of independence on genre preference between male and female audiences. χ²=54.10, dof=18, p&lt;0.001. Gender and genre preference are definitively not independent.
+        Genres with fewer than 10 observed entries were excluded from the analysis to satisfy chi-square expected frequency assumptions and ensure reliable results.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-python">from scipy.stats import chi2_contingency
+contingency_table = pd.crosstab(
+  df['genre'], #index
+  df['gender'] #columns
+)
+
+#Counts below 10 were dropped 
+contingency_table = contingency_table[(contingency_table['Female'] > 10) & (contingency_table['Male'] > 10)]
+
+chi2, p_value, dof, expected = chi2_contingency(contingency_table)
+
+print(f"\nChi-square Statistic: {chi2:.4f}")
+print(f"P-value: {p_value:.4f}")
+print(f"Degrees of Freedom: {dof}")
+
+if p_value < 0.05:
+  print("\nResult: SIGNIFICANT ✅ — gender and genre preference are NOT independent")
+else:
+  print("\nResult: NOT SIGNIFICANT ❌ — gender and genre preference are independent")</code></pre>
+
+        <pre><code class="language-plaintext">Chi-square Statistic: 54.1021
+P-value: 0.0000
+Degrees of Freedom: 18
+
+Result: SIGNIFICANT ✅ — gender and genre preference are NOT independent</code></pre>
+        <p class="img-caption">Chi-square test of independence to determine if gender and genre are independent</p>
+      </div>
+
+      <h3>Genre Deviation from Expected</h3>
+      <p>The table below shows how the observed genre counts for each gender deviated from what would be expected if gender and genre preference were independent — that is, if male and female audiences favored genres in the same proportions.</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Genre</th>
+            <th>Skews Female (+)</th>
+            <th>Skews Male (+)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Supernatural</td><td class="dot-blue">+10.7</td><td>—</td></tr>
+          <tr><td>Romance</td><td class="dot-blue">+8.3</td><td>—</td></tr>
+          <tr><td>Mystery</td><td class="dot-blue">+7.9</td><td>—</td></tr>
+          <tr><td>Sports</td><td class="dot-blue">+6.0</td><td>—</td></tr>
+          <tr><td>Comedy</td><td class="dot-blue">+4.9</td><td>—</td></tr>
+          <tr><td>Sci-Fi</td><td>—</td><td class="dot-red">+27.7</td></tr>
+          <tr><td>Action</td><td>—</td><td class="dot-red">+6.3</td></tr>
+          <tr><td>Drama</td><td>—</td><td class="dot-red">+5.3</td></tr>
+          <tr><td>Suspense</td><td>—</td><td class="dot-red">+5.0</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout blue">
+        The Sci-Fi gap for male audience is massive — 27.8 counts, by far the largest. More surprising: <strong>Supernatural is the most female-leaning genre</strong> likely due to Fruits Basket. And Sports showing up strongly for female audiences is almost entirely driven by Haikyuu!! — two anime moving an entire genre's numbers.
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- WATCHING BEHAVIOR -->
+    <div class="section" id="s-behavior">
+      <p class="section-label">09 — Watching Behavior</p>
+      <h2>The Watching Behavior</h2>
+
+      <div class="stat-grid">
+        <div class="stat-cell">
+          <div class="val red">95 days</div>
+          <div class="lbl">Male mean watch time</div>
+        </div>
+        <div class="stat-cell">
+          <div class="val blue">72 days</div>
+          <div class="lbl">Female mean watch time</div>
+        </div>
+        <div class="stat-cell">
+          <div class="val">T=2.283</div>
+          <div class="lbl">t-value</div>
+        </div>
+        <div class="stat-cell">
+          <div class="val">p=0.023</div>
+          <div class="lbl">T-test significance</div>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Female — Mean</th>
+            <th>Female — Median</th>
+            <th>Male — Mean</th>
+            <th>Male — Median</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Days Watched</td>
+            <td>72.59</td>
+            <td>39.80</td>
+            <td class="dot-blue">95.19</td>
+            <td class="dot-blue">72.75</td>
+          </tr>
+          <tr>
+            <td>Mean Score</td>
+            <td>6.99</td>
+            <td>7.70</td>
+            <td>6.92</td>
+            <td>7.62</td>
+          </tr>
+          <tr>
+            <td>Completed</td>
+            <td>248.63</td>
+            <td>118.0</td>
+            <td class="dot-blue">291.78</td>
+            <td class="dot-blue">191.5</td>
+          </tr>
+          <tr>
+            <td>Dropped</td>
+            <td>13.02</td>
+            <td>2.0</td>
+            <td>19.51</td>
+            <td>3.0</td>
+          </tr>
+          <tr>
+            <td>Rewatched</td>
+            <td>12.43</td>
+            <td>0.0</td>
+            <td>14.68</td>
+            <td>0.0</td>
+          </tr>
+          <tr>
+            <td>Episodes Watched</td>
+            <td>4,486.98</td>
+            <td>2,588.0</td>
+            <td class="dot-blue">5,751.17</td>
+            <td class="dot-blue">4,365.0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      
+
+      <p>
+        With a strong statistical significance, <strong>male audience watched significantly more anime than female audience</strong> — 95 vs. 72 mean days watched, t-test p=0.023.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-plaintext">ANOVA — Days Watched by Age Group:
+F=2.1319, p=0.0953 — NOT SIGNIFICANT ❌
+
+ANOVA — Mean Score by Age Group:
+F=1.5268, p=0.2067 — NOT SIGNIFICANT ❌
+
+ANOVA — Rewatched by Age Group:
+F=0.4051, p=0.7494 — NOT SIGNIFICANT ❌
+
+T-test — Days Watched by Gender:
+T=2.2828, p=0.0229 — SIGNIFICANT ✅
+
+T-test — Mean Score by Gender:
+T=-0.2784, p=0.7808 — NOT SIGNIFICANT ❌</code></pre>
+        <p class="img-caption">One-way ANOVA and T- results (the complete code is below)</p>
+      </div>
+
+      <p>
+        Everything else was murkier. ANOVA on days watched by age group returned p=0.095 — not significant. 
+      </p>
+
+      <p>
+        Both genders rate anime almost identically — male mean score 6.92, female 6.99, p=0.781 (very high p-value, strongly not significant). Whatever taste differences exist, they don't show up in how harshly each gender judges what they watch.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-python">from scipy import stats
+
+def is_significant(p):
+    print(f"F={f:.4f}, p={p:.4f} — {'SIGNIFICANT ✅' if p < 0.05 else 'NOT SIGNIFICANT ❌'}")
+
+# ── ANOVA: DAYS WATCHED BY AGE GROUP ──────────────
+print("ANOVA — Days Watched by Age Group:")
+groups = [df[df['age_group'] == ag]['days_watched'].dropna() for ag in age_groups]
+f, p = stats.f_oneway(*groups)
+is_significant(p)
+
+# ── ANOVA: MEAN SCORE BY AGE GROUP ────────────────
+print("\nANOVA — Mean Score by Age Group:")
+groups = [df[df['age_group'] == ag]['mean_score'].dropna() for ag in age_groups]
+f, p = stats.f_oneway(*groups)
+is_significant(p)
+
+# ── ANOVA: REWATCHED BY AGE GROUP ─────────────────
+print("\nANOVA — Rewatched by Age Group:")
+groups = [df[df['age_group'] == ag]['rewatched'].dropna() for ag in age_groups]
+f, p = stats.f_oneway(*groups)
+is_significant(p)
+
+# ── T-TEST: DAYS WATCHED BY GENDER ────────────────
+print("\nT-test — Days Watched by Gender:")
+male = df[df['gender'] == 'Male']['days_watched'].dropna()
+female = df[df['gender'] == 'Female']['days_watched'].dropna()
+t, p = stats.ttest_ind(male, female)
+is_significant(p)
+
+# ── T-TEST: MEAN SCORE BY GENDER ──────────────────
+print("\nT-test — Mean Score by Gender:")
+male = df[df['gender'] == 'Male']['mean_score'].dropna()
+female = df[df['gender'] == 'Female']['mean_score'].dropna()
+t, p = stats.ttest_ind(male, female)
+is_significant(p)</code></pre>
+        <p class="img-caption">Code for the ANOVA and T-tests</p>
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- RETROSPECTIVE -->
+    <div class="section" id="s-retrospective">
+      <p class="section-label">10 — Retrospective</p>
+      <h2>What I'd Do Differently</h2>
+
+      <h3>Bigger 45+ Sample</h3>
+      <p>
+        Sixteen users isn't enough to draw strong conclusions about an entire demographic. I'd run the collection longer, specifically targeting older users.
+      </p>
+
+      <h3>Non-parametric Tests</h3>
+      <p>
+        ANOVA assumes roughly normal distribution. Anime watching data is heavily skewed by power users. Kruskal-Wallis and Mann-Whitney U would have been more appropriate and should be included in a more rigorous version of this analysis.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- CONCLUSION -->
+    <div class="section" id="s-conclusion">
+      <p class="section-label">11 — Conclusion</p>
+      <h2>Final Thoughts</h2>
+      <p>
+        The finding that surprised me most wasn't the gender taste or the generational divide — it was how <strong>consistent the 2000s golden era is across demographics</strong>.
+        Monster, Full Metal Alchemist, Death Note, Cowboy Bebop, Steins;Gate, One Piece, and Naruto: Shippuuden show up everywhere. Regardless of age, regardless of gender, these anime have become what we call a timeless classic.
+      </p>
+      <p>
+        What I didn't expect was how <strong>sharply age groups partition by era</strong>. 
+        The 18–24 and 35–44 groups aren't just slightly different — they're mostly watching from almost entirely separate decades. 
+        If I ran this same analysis in 2036, the era distributions would almost certainly shift. The 18–24 group of today will become the 25–34 group of tomorrow — and they'll bring the 2010s with them as their golden era, the same way the current 35–44 group carried the 2000s.
+      </p>
+      <p>
+        Whether this generation of anime produces a classic that can survive the test of time with the same universal pull is a question worth revisiting in ten years.
+      </p>
+      <div class="callout blue">
+        <strong>Tools used:</strong> Python · Pandas · NumPy · Matplotlib · Seaborn · SciPy · Jikan REST API v4 · JupyterLab · GitHub
+      </div>
+    </div>
+
+    <script>
+    /* TOC GENERATION */
+      const sections = [
+        { id: 's-intro',        label: 'Introduction' },
+        { id: 's-why',          label: 'Motivation' },
+        { id: 's-data',         label: 'The Data' },
+        { id: 's-limits',       label: 'Limitations' },
+        { id: 's-findings',     label: 'Findings' },
+        { id: 's-generational', label: 'Generational Taste' },
+        { id: 's-universal',    label: 'Universal Anime' },
+        { id: 's-gender',       label: 'Gender & Taste' },
+        { id: 's-behavior',     label: 'Watching Behavior' },
+        { id: 's-retrospective',label: 'Retrospective' },
+        { id: 's-conclusion',   label: 'Conclusion' },
+      ];
+    </script>
+
+  </article>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-left">
+    <div>© 2026 Iellmar Barroga</div>
+    <div>Data Analyst · Philippines</div>
+  </div>
+  <nav class="footer-links">
+    <a href="https://github.com/iellmarbarroga" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/iellmar-barroga/" target="_blank">LinkedIn</a>
+    <a href="/cdn-cgi/l/email-protection#c9aba8bbbba6aea8e7a0a0ae89aea4a8a0a5e7aaa6a4">Email</a>
+    <a class="cv-link" href="#" target="_blank">CV</a>
+  </nav>
+</footer>
+
+<!-- MOBILE TOC BUTTON -->
+<button id="toc-btn" aria-label="Table of contents">☰</button>
+
+<!-- MOBILE TOC DRAWER -->
+<div class="toc-drawer" id="toc-drawer">
+  <button class="toc-drawer-close" id="toc-drawer-close">✕ Close</button>
+  <ul id="toc-drawer-list"></ul>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="../assets/js/table_of_contents.js"></script>
+<script src="../assets/js/custom-image-popup.js"></script>
+<script src="../assets/js/cv-link.js"></script>
+
+</body>
+</html>
