@@ -13,11 +13,13 @@
   <!--- This is for the "script-code-look" on the website page-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
- 
+
   <style>
     :root { --accent: #2471a3; --accent2: #1a5276; }
   </style>
 </head>
+
+<body>
 
 <!--For the pop-up of images/video to full screen-->
 <div id="lightbox" onclick="closeLightbox()">
@@ -27,9 +29,6 @@
   </iframe>
 </div>
 
-<script>hljs.highlightAll();</script>
-<body>
-  
 <div id="progress"></div>
 
 <!-- NAV -->
@@ -905,7 +904,7 @@ const sections = [
   { id: 's-behavior',     label: 'Watching Behavior' },
   { id: 's-retrospective',label: 'Retrospective' },
   { id: 's-conclusion',   label: 'Conclusion' },
-];
+  ];
 </script>
 
 <!-- FOOTER -->
@@ -935,6 +934,7 @@ const sections = [
 <script src="../assets/js/table_of_contents.js"></script>
 <script src="../assets/js/custom-image-popup.js"></script>
 <script src="../assets/js/cv-link.js"></script>
+<script>hljs.highlightAll();</script>
 
 </body>
 </html>
