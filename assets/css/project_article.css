@@ -438,9 +438,32 @@
       }
 
     }
+    
     @media (max-width: 540px) {
-      .kpi { flex: 1 1 120px; }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
     }
+
+    .kpi {
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .kpi:nth-child(2) {
+      border-right: none;
+    }
+
+    .kpi:nth-child(3) {
+      border-right: 1px solid var(--rule);
+      border-bottom: none;
+    }
+
+    .kpi:nth-child(4) {
+      border-right: none;
+      border-bottom: none;
+    }
+  }
 
     .site-footer {
     border-top: 1px solid var(--rule);
