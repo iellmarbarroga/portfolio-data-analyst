@@ -17,6 +17,22 @@
   <style>
     :root { --accent: #2471a3; --accent2: #1a5276; }
   </style>
+
+  #Added this css block so that mobile screen wouldnt be cut off at the right side
+  <style>
+    :root { --accent: #2471a3; --accent2: #1a5276; }
+  
+    /* fix horizontal overflow from code blocks on mobile */
+    pre {
+      max-width: 100%;
+      overflow-x: auto;
+    }
+  
+    * {
+      max-width: 100%;
+    }
+  </style>
+  
 </head>
 
 <body>
