@@ -1,5 +1,5 @@
 // cv-link.js
-const cvLink = "https://drive.google.com/drive/folders/13eSRJPlFaH1JsJkGJb31ZC_9hM_bLaku";
+const cvLink = "https://drive.google.com/file/d/12Ew_M5QRuxzkUUiNXgeELAttzzCcswG2/view";
 
 // Function to set the CV link dynamically
 function setCVLink() {
