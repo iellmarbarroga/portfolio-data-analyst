@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>B2B Event Marketing Analysis — Iellmar Barroga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/project_article.css">
+  <!-- favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%23e67e22'/><text x='50' y='72' font-size='68' font-family='serif' font-weight='bold' text-anchor='middle' fill='white'>IB</text></svg>">
+
+  <!--- This is for the "script-code-look" on the website -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+</head>
+
+<body>
+
+<!--For the pop-up of images/video to full screen-->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="">
+  <iframe id="lightbox-video" src="" allowfullscreen
+    style="display:none; width:90vw; max-width:1100px; height:56.25vw; max-height:80vh; border:none; border-radius:4px;">
+  </iframe>
+</div>
+
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-back" href="../index.html">← Back to Portfolio</a>
+  <span class="nav-title">Iellmar Barroga</span>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-meta">
+    <span class="tag red">SQL</span>
+    <span class="tag blue">PostgreSQL</span>
+    <span class="tag">Data Analysis</span>
+    <span class="tag">B2B Marketing</span>
+  </div>
+  <h1>B2B Event Marketing<br>Analysis</h1>
+  <p class="hero-sub">
+    Exploring a simulated exhibitions-and-conferences business (50 events, 4,554 leads, and €5.8M in marketing spend)
+    to find out which event types actually make money, where the sales funnel leaks, and whether the budget is going where the returns are.
+  </p>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-value blue">50</div>
+      <div class="kpi-label">Events</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value blue">4,554</div>
+      <div class="kpi-label">Leads</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value red">€6.57M</div>
+      <div class="kpi-label">Total Revenue</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value">8.7%</div>
+      <div class="kpi-label">Conversion Rate</div>
+    </div>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- SIDEBAR TOC -->
+  <aside class="toc">
+    <p class="toc-label">Contents</p>
+    <ul id="toc-list"></ul>
+  </aside>
+
+  <!-- ARTICLE -->
+  <article class="article" id="article">
+
+    <!-- INTRODUCTION -->
+    <div class="section" id="s-intro">
+      <p class="section-label">01 — Overview</p>
+      <h2>Introduction</h2>
+      <p>
+        This is an exploratory data analysis (EDA) built on <code>yel_exhibitions</code>, a simulated B2B event marketing dataset generated using Python.
+        It models a company running exhibitions, conferences, webinars, and networking events across Europe, tracking lead generation,
+        conversions, deal values, and marketing costs across 50 events and 4,554 leads.
+      </p>
+      <p>
+        The goal was to practice real-world SQL while uncovering the kind of insights a marketing team would actually act on: which event
+        types are profitable, where the sales funnel leaks, and whether marketing spend is justified by the returns it generates.
+      </p>
+      <div class="callout blue">
+        <strong>Goal:</strong> Use SQL alone (CTEs, joins, aggregates) to turn a raw events-and-leads dataset into a set of decisions:
+        where to spend more, where to cut, and where the funnel needs fixing.
+      </div>
+      <p><strong>Tools:</strong> PostgreSQL, DBeaver</p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- MOTIVATION -->
+    <div class="section" id="s-why">
+      <p class="section-label">02 — Motivation</p>
+      <h2>Why This Project?</h2>
+      <p>
+        I wanted a SQL portfolio project that went beyond simple <code>SELECT</code> and <code>GROUP BY</code> exercises, something that
+        forced me into real join logic, CTEs, and the kind of aggregation traps that only show up once a schema has genuine one-to-many
+        relationships.
+      </p>
+      <p>
+        B2B event marketing was a good fit for that. Real datasets in this space are hard to find publicly, so I simulated one in Python:
+        events, leads, funnel stages, deal values, and costs, designed to reflect real-life event marketing data.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- SCHEMA -->
+    <div class="section" id="s-schema">
+      <p class="section-label">03 — Dataset</p>
+      <h2>The Data</h2>
+      <p>
+        The dataset was simulated using Python and loaded into PostgreSQL as two related tables:
+        <a href="https://github.com/iellmarbarroga/event-marketing-data/blob/main/outputs/events.csv" target="_blank" style="color:var(--accent2);text-decoration:underline"><code>events</code></a>
+        and
+        <a href="https://github.com/iellmarbarroga/event-marketing-data/blob/main/outputs/leads.csv" target="_blank" style="color:var(--accent2);text-decoration:underline"><code>leads</code></a>,
+        joined on <code>event_id</code>.
+      </p>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Table</th><th>Rows</th><th>Key Columns</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>events</td><td>50</td><td>event_type, event_subtype, registrations, attendees, leads_generated, leads_converted, marketing_cost, status</td></tr>
+          <tr><td>leads</td><td>4,554</td><td>event_id (FK), lead_source, lead_stage, converted, deal_value, package_type, date_captured, date_converted</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        <code>event_type</code> covers Exhibition, Conference, Webinar, and Networking. Exhibitions carry an additional
+        <code>event_subtype</code> (Flagship or Smaller) which turns out to matter a lot later on.
+      </p>
+
+      <div class="callout">
+        <strong>Known totals used as sanity checks throughout:</strong> 4,554 total leads, 398 converted (8.7%), €6,574,080 in revenue,
+        €5,807,400 in marketing cost. Every aggregate query below was checked against these numbers before I trusted it.
+      </div>
+
+      <p>
+        Full raw data and the Python simulation script are available on
+        <a href="https://github.com/iellmarbarroga/event-marketing-data.git" target="_blank" style="color:var(--accent2);text-decoration:underline">GitHub</a>.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- DATA EXPLORATION -->
+    <div class="section" id="s-exploration">
+      <p class="section-label">04 — Data Exploration</p>
+      <h2>Where Are Leads Getting Stuck?</h2>
+      <p>
+        Before writing any analytical queries, I explored the <code>leads</code> table to understand where leads sit in the funnel right now.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-sql">SELECT lead_stage, COUNT(*) AS lead_count
+FROM leads
+GROUP BY lead_stage
+ORDER BY lead_count DESC;</code></pre>
+        <p class="img-caption">Counting leads by funnel stage</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>lead_stage</th><th>lead_count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Contacted</td><td class="dot-red">1,676</td></tr>
+          <tr><td>Qualified</td><td>1,076</td></tr>
+          <tr><td>New</td><td>573</td></tr>
+          <tr><td>Proposal</td><td>497</td></tr>
+          <tr><td>Closed Won</td><td>398</td></tr>
+          <tr><td>Closed Lost</td><td>334</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        The bottleneck is immediately visible: <strong>1,676 leads (37% of the total) are sitting at "Contacted"</strong> without progressing.
+        This isn't a lead generation problem. Leads are being captured but not worked. A structured follow-up cadence targeting this
+        segment could meaningfully improve overall conversion without spending a single euro more on marketing.
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- FAN-OUT -->
+    <div class="section" id="s-fanout">
+      <p class="section-label">05 — Analysis</p>
+      <h2>The Fan-Out Problem: Why Naive Joins Break Aggregates</h2>
+      <p>
+        Before calculating revenue and cost together, I had to solve a common SQL trap. When joining <code>events</code> (one side) to
+        <code>leads</code> (many side), any aggregate on the <code>events</code> columns, like <code>SUM(marketing_cost)</code>, gets
+        multiplied once per matching lead row. An event with 200 leads would inflate its cost by 200x before the
+        <code>SUM</code> ever runs.
+      </p>
+      <div class="callout blue">
+        <strong>The fix:</strong> pre-aggregate costs in a CTE before joining, so by the time it enters the query it's already a single
+        number per group, nothing left to fan out.
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- REVENUE BY EVENT TYPE -->
+    <div class="section" id="s-revenue">
+      <p class="section-label">06 — Analysis</p>
+      <h2>Revenue and Cost by Event Type</h2>
+
+      <div class="img-block">
+        <pre><code class="language-sql">WITH revenue_per_event_type AS (
+    SELECT e.event_type, SUM(l.deal_value) AS tot_revenue
+    FROM leads l
+    JOIN events e ON l.event_id = e.event_id
+    WHERE l.converted IS TRUE
+    GROUP BY e.event_type
+),
+cost_per_event_type AS (
+    SELECT event_type, SUM(marketing_cost) AS tot_cost
+    FROM events
+    GROUP BY event_type
+)
+SELECT
+    r.event_type,
+    r.tot_revenue,
+    c.tot_cost,
+    ROUND((r.tot_revenue - c.tot_cost)::NUMERIC / c.tot_cost, 2) AS roi
+FROM revenue_per_event_type r
+JOIN cost_per_event_type c ON r.event_type = c.event_type
+ORDER BY roi DESC;</code></pre>
+        <p class="img-caption">Costs pre-aggregated in a CTE before joining to revenue: the fan-out fix in practice</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>event_type</th><th>revenue</th><th>cost</th><th>ROI</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Exhibition</td><td>€6,078,780</td><td>€4,470,300</td><td class="dot-blue">+0.36</td></tr>
+          <tr><td>Webinar</td><td>€89,120</td><td>€67,200</td><td class="dot-blue">+0.33</td></tr>
+          <tr><td>Conference</td><td>€362,020</td><td>€1,042,300</td><td class="dot-red">-0.65</td></tr>
+          <tr><td>Networking</td><td>€44,160</td><td>€227,600</td><td class="dot-red">-0.81</td></tr>
+        </tbody>
+      </table>
+
+      <p><i>Revenue total: €6,574,080 ✓, matches the known total, confirming the join logic is clean.</i></p>
+
+      <p>
+        Exhibitions and Webinars are in positive ROI territory. Conference and Networking are actively destroying value: together they
+        consumed €1.27M in marketing spend and returned only €406K in revenue.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- CONFERENCE DEEP DIVE -->
+    <div class="section" id="s-conference">
+      <p class="section-label">07 — Analysis</p>
+      <h2>Digging Deeper: Is It a Cost Problem or a Conversion Problem?</h2>
+      <p>
+        Conference converts at 6.96%, higher than Webinar's 5.95%, yet Conference ROI is -65% while Webinar is +33%. The problem isn't
+        conversion rate. To find where Conference is bleeding, I looked at cost per lead generated.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-sql">SELECT
+    e.event_type,
+    SUM(e.leads_generated) AS tot_leads,
+    SUM(e.marketing_cost) AS tot_cost,
+    ROUND(SUM(e.marketing_cost)::NUMERIC / SUM(e.leads_generated), 2) AS cost_per_lead
+FROM events e
+GROUP BY e.event_type
+ORDER BY cost_per_lead;</code></pre>
+        <p class="img-caption">Cost per lead generated, by event type</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>event_type</th><th>leads_generated</th><th>cost</th><th>cost_per_lead</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Webinar</td><td>1,258</td><td>€67,200</td><td class="dot-blue">€53</td></tr>
+          <tr><td>Networking</td><td>249</td><td>€227,600</td><td>€914</td></tr>
+          <tr><td>Conference</td><td>785</td><td>€1,042,300</td><td class="dot-red">€1,328</td></tr>
+          <tr><td>Exhibition</td><td>2,262</td><td>€4,470,300</td><td>€1,976</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        Webinars generate leads at €53 each, <strong>25x cheaper than Conference at €1,328</strong>. Even though Conference converts at a
+        higher rate, the cost of acquiring each lead is so high that the math never recovers. Conference is an expensive way to get leads
+        that don't generate enough deal value to justify the spend.
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- EXHIBITIONS SUBTYPE -->
+    <div class="section" id="s-exhibition">
+      <p class="section-label">08 — Analysis</p>
+      <h2>The Hidden Story Inside Exhibitions</h2>
+      <p>
+        Exhibitions show +36% ROI overall, but that aggregate is masking a significant internal divide. I broke it down by subtype:
+        Flagship vs. Smaller.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-sql">WITH revenue_per_subtype AS (
+    SELECT e.event_subtype, SUM(l.deal_value) AS tot_revenue
+    FROM leads l
+    JOIN events e ON l.event_id = e.event_id
+    WHERE l.converted IS TRUE AND e.event_type = 'Exhibition'
+    GROUP BY e.event_subtype
+),
+cost_per_subtype AS (
+    SELECT event_subtype, SUM(marketing_cost) AS tot_cost
+    FROM events
+    WHERE event_type = 'Exhibition'
+    GROUP BY event_subtype
+)
+SELECT
+    r.event_subtype,
+    r.tot_revenue,
+    c.tot_cost,
+    ROUND((r.tot_revenue - c.tot_cost)::NUMERIC / c.tot_cost, 2) AS roi
+FROM revenue_per_subtype r
+JOIN cost_per_subtype c ON r.event_subtype = c.event_subtype
+ORDER BY roi DESC;</code></pre>
+        <p class="img-caption">Same fan-out-safe pattern, filtered down to Exhibition subtypes</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>event_subtype</th><th>revenue</th><th>cost</th><th>ROI</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Flagship</td><td>€5,428,640</td><td>€3,160,600</td><td class="dot-blue">+0.72</td></tr>
+          <tr><td>Smaller</td><td>€650,140</td><td>€1,309,700</td><td class="dot-red">-0.50</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout blue">
+        <strong>Flagship exhibitions deliver +72% ROI. Smaller exhibitions lose money at -50%.</strong> The overall +36% is a blended
+        number that obscures the fact that Smaller exhibitions are a drag on the entire category. Flagship events are carrying everything.
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- PACKAGE TYPE -->
+    <div class="section" id="s-package">
+      <p class="section-label">09 — Analysis</p>
+      <h2>Revenue by Package Type</h2>
+      <p>
+        Since <code>package_type</code> is only populated on converted leads, this view focuses on revenue and deal count per package,
+        not conversion rate.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-sql">SELECT package_type, SUM(deal_value) AS total_revenue, COUNT(*) AS deal_count
+FROM leads
+WHERE converted IS TRUE
+GROUP BY package_type
+ORDER BY total_revenue DESC;</code></pre>
+        <p class="img-caption">Revenue and deal count by package type</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>package_type</th><th>total_revenue</th><th>deal_count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Booth Premium (Flagship)</td><td class="dot-blue">€4,229,900</td><td>105</td></tr>
+          <tr><td>Booth Standard (Flagship)</td><td>€1,198,740</td><td>98</td></tr>
+          <tr><td>Booth Premium</td><td>€439,260</td><td>25</td></tr>
+          <tr><td>Sponsorship Platinum</td><td>€244,020</td><td>31</td></tr>
+          <tr><td>Booth Standard</td><td>€210,880</td><td>22</td></tr>
+          <tr><td>Sponsorship Gold</td><td>€118,000</td><td>25</td></tr>
+          <tr><td>Webinar Premium</td><td>€66,990</td><td>46</td></tr>
+          <tr><td>Sponsorship Emerald</td><td>€24,920</td><td>7</td></tr>
+          <tr><td>Webinar Standard</td><td>€22,130</td><td>30</td></tr>
+          <tr><td>Sponsorship Ruby</td><td>€19,240</td><td>9</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Package Breakdown by Event Type</h3>
+      <div class="img-block">
+        <pre><code class="language-sql">SELECT e.event_type, e.event_subtype, l.package_type,
+       SUM(l.deal_value) AS total_revenue, COUNT(*) AS deal_count
+FROM leads l
+LEFT JOIN events e ON l.event_id = e.event_id
+WHERE l.converted IS TRUE
+GROUP BY e.event_type, e.event_subtype, l.package_type
+ORDER BY total_revenue DESC;</code></pre>
+        <p class="img-caption">Package type revenue, broken down by event type and subtype</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>event_type</th><th>event_subtype</th><th>package_type</th><th>total_revenue</th><th>deal_count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Exhibition</td><td>Flagship</td><td>Booth Premium (Flagship)</td><td class="dot-blue">€4,229,900</td><td>105</td></tr>
+          <tr><td>Exhibition</td><td>Flagship</td><td>Booth Standard (Flagship)</td><td>€1,198,740</td><td>98</td></tr>
+          <tr><td>Exhibition</td><td>Smaller</td><td>Booth Premium</td><td>€439,260</td><td>25</td></tr>
+          <tr><td>Conference</td><td>—</td><td>Sponsorship Platinum</td><td class="dot-red">€244,020</td><td>31</td></tr>
+          <tr><td>Exhibition</td><td>Smaller</td><td>Booth Standard</td><td>€210,880</td><td>22</td></tr>
+          <tr><td>Conference</td><td>—</td><td>Sponsorship Gold</td><td class="dot-red">€118,000</td><td>25</td></tr>
+          <tr><td>Webinar</td><td>—</td><td>Webinar Premium</td><td>€66,990</td><td>46</td></tr>
+          <tr><td>Networking</td><td>—</td><td>Sponsorship Emerald</td><td>€24,920</td><td>7</td></tr>
+          <tr><td>Webinar</td><td>—</td><td>Webinar Standard</td><td>€22,130</td><td>30</td></tr>
+          <tr><td>Networking</td><td>—</td><td>Sponsorship Ruby</td><td>€19,240</td><td>9</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        Each event type sells an entirely distinct set of packages, there is no overlap. This confirms that package type is a direct
+        function of event type, not a cross-selling opportunity.
+      </p>
+
+      <div class="callout blue">
+        <strong>Flagship Exhibition booth packages dominate revenue.</strong> <code>Booth Premium (Flagship)</code> alone accounts for
+        €4.23M, 64% of total revenue, from just 105 deals. At an average deal value of ~€40,000 per deal, these are the highest-value
+        transactions in the entire portfolio.
+      </div>
+
+      <div class="callout">
+        <strong>Conference Sponsorship packages confirm the ROI problem from a different angle.</strong> Platinum and Gold sponsorships
+        together generated €362K, but Conference events spent €1.04M in marketing cost to get there. The packages themselves aren't
+        low-value (Platinum averages ~€7,900 per deal), but the cost to run these events far outpaces what the packages return.
+      </div>
+
+      <p>
+        <strong>Webinar packages are small but efficient.</strong> Premium and Standard Webinar packages total €89K across 76 deals,
+        modest in absolute terms, but generated at a fraction of the cost of any other event type.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- TIME & CHANNEL -->
+    <div class="section" id="s-channel">
+      <p class="section-label">11 — Time &amp; Channel Analysis</p>
+      <h2>Do Lead Sources and Timing Actually Matter?</h2>
+
+      <h3>Lead Source vs. Conversion Rate</h3>
+      <div class="img-block">
+        <pre><code class="language-sql">SELECT
+    lead_source,
+    COUNT(*) AS lead_count,
+    ROUND(COUNT(date_converted)::NUMERIC / COUNT(*), 2) AS conversion_rate
+FROM leads
+GROUP BY lead_source
+ORDER BY conversion_rate DESC;</code></pre>
+        <p class="img-caption">Conversion rate by lead source</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>lead_source</th><th>lead_count</th><th>conversion_rate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Registration Form</td><td>876</td><td>0.10</td></tr>
+          <tr><td>Referral</td><td>679</td><td>0.09</td></tr>
+          <tr><td>Email Campaign</td><td>648</td><td>0.09</td></tr>
+          <tr><td>Badge Scan</td><td class="dot-blue">1,654</td><td>0.08</td></tr>
+          <tr><td>Walk-in Enquiry</td><td>450</td><td>0.08</td></tr>
+          <tr><td>LinkedIn Outreach</td><td>247</td><td>0.08</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        Conversion rates are remarkably flat, ranging only from 8% to 10% across all sources. Badge Scan generates the most volume by far
+        (1,654 leads) but converts at the same rate as LinkedIn Outreach, which generates only 247. Lead source isn't a meaningful
+        differentiator for conversion; volume and cost of acquisition matter more.
+      </p>
+
+      <h3>How Long Does It Take to Convert?</h3>
+      <div class="img-block">
+        <pre><code class="language-sql">SELECT
+    e.event_type,
+    e.event_subtype,
+    COUNT(l.date_captured) AS converted_count,
+    ROUND(AVG(l.date_converted - l.date_captured), 1) AS avg_days_to_convert
+FROM leads l
+LEFT JOIN events e ON l.event_id = e.event_id
+WHERE l.converted IS TRUE
+GROUP BY e.event_type, e.event_subtype
+ORDER BY avg_days_to_convert;</code></pre>
+        <p class="img-caption">Average days between lead capture and conversion</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>event_type</th><th>event_subtype</th><th>converted</th><th>avg_days</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Webinar</td><td>—</td><td>76</td><td class="dot-blue">30.2</td></tr>
+          <tr><td>Networking</td><td>—</td><td>16</td><td>45.8</td></tr>
+          <tr><td>Conference</td><td>—</td><td>56</td><td>61.8</td></tr>
+          <tr><td>Exhibition</td><td>Smaller</td><td>47</td><td>78.3</td></tr>
+          <tr><td>Exhibition</td><td>Flagship</td><td>203</td><td class="dot-red">118.0</td></tr>
+        </tbody>
+      </table>
+
+      <p><i>Converted total: 398 ✓</i></p>
+
+      <p>
+        Webinar leads close in 30 days, fast, low-friction online follow-up. Flagship Exhibition leads take 118 days, reflecting the
+        longer B2B sales cycles that come with high-value deals. Conversion time directly mirrors the deal complexity and value of each
+        event type.
+      </p>
+
+      <h3>Monthly Lead Volume Trend</h3>
+      <div class="img-block">
+        <pre><code class="language-sql">SELECT
+    DATE_TRUNC('month', date_captured)::DATE AS month_year,
+    COUNT(*) AS lead_count
+FROM leads
+GROUP BY DATE_TRUNC('month', date_captured)
+ORDER BY month_year;</code></pre>
+        <p class="img-caption">Lead volume grouped by month</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>month_year</th><th>lead_count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2023-01</td><td class="dot-blue">679</td></tr>
+          <tr><td>2023-02</td><td>113</td></tr>
+          <tr><td>2023-03</td><td>22</td></tr>
+          <tr><td>2023-05</td><td>333</td></tr>
+          <tr><td>2023-08</td><td class="dot-blue">653</td></tr>
+          <tr><td>2023-10</td><td>286</td></tr>
+          <tr><td>2024-04</td><td class="dot-blue">793</td></tr>
+          <tr><td>2024-08</td><td>205</td></tr>
+          <tr><td>...</td><td>...</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        Lead volume spikes follow event schedules, not calendar seasons. January 2023 (679), August 2023 (653), and April 2024 (793) are
+        the three largest months, each corresponding to a major event. Some months show near-zero activity, confirming this is an
+        event-driven business with no inherent seasonality.
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- DATA VALIDATION -->
+    <div class="section" id="s-validation">
+      <p class="section-label">10 — Data Validation</p>
+      <h2>Trusting the Numbers</h2>
+      <p>
+        Before trusting any dashboard built on this data, I ran a series of checks to confirm integrity across both tables.
+      </p>
+
+      <div class="img-block">
+        <pre><code class="language-sql">-- No negative values in numeric columns
+SELECT COUNT(*) FROM events
+WHERE registrations < 0 OR attendees < 0
+   OR leads_generated < 0 OR leads_converted < 0
+   OR marketing_cost < 0;
+
+-- Attendees never exceeds registrations
+SELECT COUNT(*) FROM events
+WHERE attendees > registrations;
+
+-- Leads count in leads table matches stored count in events table
+SELECT e.event_id, e.leads_generated, COUNT(*) AS actual_count
+FROM leads l
+LEFT JOIN events e ON l.event_id = e.event_id
+GROUP BY e.event_id, e.leads_generated
+HAVING COUNT(*) <> e.leads_generated;
+
+-- Every converted lead has deal_value and date_converted
+SELECT COUNT(*) FROM leads
+WHERE converted IS TRUE
+  AND (deal_value IS NULL OR date_converted IS NULL);</code></pre>
+        <p class="img-caption">Four integrity checks: negatives, attendance logic, cross-table counts, and converted-lead completeness</p>
+      </div>
+
+      <div class="callout blue">
+        All checks returned 0 rows. The dataset is clean and consistent: no negative values, no attendance anomalies, lead counts match
+        across both tables, and every converted lead has the expected fields populated.
+      </div>
+    </div>
+    <hr class="section-rule">
+
+    <!-- KEY INSIGHTS -->
+    <div class="section" id="s-insights">
+      <p class="section-label">12 — Key Insights</p>
+      <h2>What I Found</h2>
+
+      <h3>1. Exhibitions drive 92% of revenue, but only Flagship events are profitable</h3>
+      <p>
+        Flagship exhibitions deliver +72% ROI. Smaller exhibitions lose money at -50%. The blended +36% Exhibition ROI hides this divide
+        entirely. Budget allocation should concentrate on Flagship events and reconsider the Smaller exhibition programme.
+      </p>
+
+      <h3>2. Webinars are the most efficient channel by a wide margin</h3>
+      <p>
+        At €53 per lead vs. €1,328 for Conference, Webinars are 25x cheaper to acquire leads from and still return +33% ROI. For lead
+        volume at low cost, Webinars are the highest-leverage investment in the portfolio.
+      </p>
+
+      <h3>3. Conference and Networking are destroying value</h3>
+      <p>
+        Combined, these two event types spent €1.27M and returned €406K, a -68% blended ROI. The root cause isn't conversion rate
+        (Conference actually converts better than Webinar) but disproportionately high acquisition costs relative to deal values generated.
+      </p>
+
+      <h3>4. 37% of leads are stalled at the Contacted stage</h3>
+      <p>
+        1,676 leads have been contacted and gone nowhere. This is the single largest untapped opportunity in the funnel: a follow-up
+        problem, not a lead generation problem.
+      </p>
+
+      <h3>5. Lead source is not a meaningful conversion driver</h3>
+      <p>
+        All six lead sources convert within a tight 8–10% band. Optimising for lead source mix is unlikely to move the needle. Volume
+        (Badge Scan) and cost efficiency (Registration Form, Referral) are more useful lenses.
+      </p>
+    </div>
+    <hr class="section-rule">
+
+    <!-- CONCLUSION -->
+    <div class="section" id="s-conclusion">
+      <p class="section-label">13 — Conclusion</p>
+      <h2>Final Thoughts</h2>
+      <p>
+        The finding that stuck with me most wasn't the ROI split between event types. It was how much a single blended metric can hide.
+        Exhibition ROI looked healthy at +36% until it was broken down by subtype, and the "expensive but converts well" instinct about
+        Conference turned out to be the wrong story entirely once cost-per-lead entered the picture.
+      </p>
+      <p>
+        Technically, the most useful lesson was the fan-out problem itself. It's an easy mistake to make with a one-to-many join, and
+        it's the kind of bug that doesn't throw an error. It just quietly inflates a number until a sanity check against a known total
+        catches it. Every aggregate query in this project was built with that check in mind.
+      </p>
+      <div class="callout blue">
+        Want to dig into the code? The full project, from the Python simulation script to every query above, is available on
+        <a href="https://github.com/iellmarbarroga/event-marketing-data.git" target="_blank" style="color: var(--accent2); text-decoration: underline;">GitHub</a>.
+      </div>
+      <div class="callout blue">
+        <strong>Tools used:</strong> PostgreSQL · DBeaver · Python (data simulation)
+      </div>
+    </div>
+  </article>
+</div>
+
+<script>
+/* TOC GENERATION */
+const sections = [
+  { id: 's-intro',       label: 'Introduction' },
+  { id: 's-why',         label: 'Motivation' },
+  { id: 's-schema',      label: 'The Data' },
+  { id: 's-exploration', label: 'Funnel Exploration' },
+  { id: 's-fanout',      label: 'The Fan-Out Problem' },
+  { id: 's-revenue',     label: 'Revenue by Event Type' },
+  { id: 's-conference',  label: 'Cost Per Lead' },
+  { id: 's-exhibition',  label: 'Exhibitions Deep Dive' },
+  { id: 's-channel',     label: 'Time & Channel' },
+  { id: 's-package',     label: 'Revenue by Package Type' }, 
+  { id: 's-validation',  label: 'Data Validation' },
+  { id: 's-insights',    label: 'Key Insights' },
+  { id: 's-conclusion',  label: 'Conclusion' },
+  ];
+</script>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-left">
+    <div>© 2026 Iellmar Barroga</div>
+    <div>Data Analyst · Philippines</div>
+  </div>
+  <nav class="footer-links">
+    <a href="https://github.com/iellmarbarroga" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/iellmar-barroga/" target="_blank">LinkedIn</a>
+    <a href="mailto:barroga.iig@gmail.com">Email</a>
+    <a class="cv-link" href="#" target="_blank">CV</a>
+  </nav>
+</footer>
+
+<!-- MOBILE TOC BUTTON -->
+<button id="toc-btn" aria-label="Table of contents">☰</button>
+
+<!-- MOBILE TOC DRAWER -->
+<div class="toc-drawer" id="toc-drawer">
+  <button class="toc-drawer-close" id="toc-drawer-close">✕ Close</button>
+  <ul id="toc-drawer-list"></ul>
+</div>
+
+<script src="../assets/js/table_of_contents.js"></script>
+<script src="../assets/js/custom-image-popup.js"></script>
+<script src="../assets/js/cv-link.js"></script>
+<script>hljs.highlightAll();</script>
+
+</body>
+</html>
